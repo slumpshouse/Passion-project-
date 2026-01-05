@@ -146,7 +146,60 @@ export default function AiInsightsClient({ transactions = [] }) {
             </div>
           ) : null}
 
-          <div className="mt-6 text-xs text-foreground/60">{insights.disclaimer || "Educational only; not financial advice."}</div>
+          {insights.actionPlan ? (
+            <div className="mt-6 space-y-6">
+              <div className="text-base font-semibold text-foreground/80">Weekly Action Plan</div>
+              
+              {/* Weekly Goals */}
+              {Array.isArray(insights.actionPlan.weeklyGoals) && insights.actionPlan.weeklyGoals.length ? (
+                <div className="rounded-xl bg-blue-50 border border-blue-200 p-5">
+                  <div className="text-sm font-semibold text-blue-800 mb-3">This Week's Goals</div>
+                  <ul className="space-y-2 text-sm text-blue-700">
+                    {insights.actionPlan.weeklyGoals.map((goal, index) => (
+                      <li key={goal} className="flex items-start gap-3">
+                        <span className="mt-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-blue-600 text-xs font-semibold text-white">
+                          {index + 1}
+                        </span>
+                        <span>{goal}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null}
+
+              {/* Spending Limits */}
+              {insights.actionPlan.spendingLimits && Object.keys(insights.actionPlan.spendingLimits).length > 0 ? (
+                <div className="rounded-xl bg-amber-50 border border-amber-200 p-5">
+                  <div className="text-sm font-semibold text-amber-800 mb-3">Weekly Spending Limits</div>
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    {Object.entries(insights.actionPlan.spendingLimits).map(([category, limit]) => (
+                      <div key={category} className="flex items-center justify-between bg-amber-100 rounded-lg px-3 py-2">
+                        <span className="text-sm font-medium text-amber-800">{category}</span>
+                        <span className="text-sm font-bold text-amber-900">{limit}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : null}
+
+              {/* Quick Wins */}
+              {Array.isArray(insights.actionPlan.quickWins) && insights.actionPlan.quickWins.length ? (
+                <div className="rounded-xl bg-emerald-50 border border-emerald-200 p-5">
+                  <div className="text-sm font-semibold text-emerald-800 mb-3">Quick Wins (Start Today!)</div>
+                  <ul className="space-y-2 text-sm text-emerald-700">
+                    {insights.actionPlan.quickWins.map((win) => (
+                      <li key={win} className="flex items-start gap-3">
+                        <span className="mt-0.5 text-emerald-600" aria-hidden="true">
+                          🎯
+                        </span>
+                        <span>{win}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null}
+            </div>
+          ) : null}
         </div>
       ) : (
         <div className="mt-6 text-sm text-foreground/60">

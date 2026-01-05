@@ -105,6 +105,32 @@ export default function FeaturesPage() {
         </div>
       </section>
 
+      <section className="mt-8 py-8">
+        <div className="mx-auto max-w-2xl text-center">
+          <h2 className="text-balance text-xl font-semibold tracking-tight sm:text-2xl">Why Choose Budget Tracker</h2>
+          <p className="mx-auto mt-3 max-w-xl text-pretty text-sm leading-6 text-foreground/70 sm:text-base">
+            Clear differentiators that explain why users should pick this solution over alternatives.
+          </p>
+        </div>
+
+        <div className="mt-8 mx-auto max-w-4xl">
+          <ul className="grid gap-6 sm:grid-cols-3">
+            <li className="rounded-2xl border border-foreground/10 bg-background p-6">
+              <div className="text-sm font-semibold">Core features, working</div>
+              <div className="mt-2 text-sm text-foreground/70">Real-time tracking, goal progress, quick entry and dashboard are implemented and visible to users.</div>
+            </li>
+            <li className="rounded-2xl border border-foreground/10 bg-background p-6">
+              <div className="text-sm font-semibold">Why buy</div>
+              <div className="mt-2 text-sm text-foreground/70">Faster entry, actionable feedback, and student-friendly UX reduce friction and improve savings outcomes.</div>
+            </li>
+            <li className="rounded-2xl border border-foreground/10 bg-background p-6">
+              <div className="text-sm font-semibold">How AI helps</div>
+              <div className="mt-2 text-sm text-foreground/70">AI powers category auto-suggestions, personalized savings recommendations, and anomaly detection for overspending.</div>
+            </li>
+          </ul>
+        </div>
+      </section>
+
       <section className="mt-10 rounded-3xl bg-blue-50 px-6 py-14 sm:px-10">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="text-balance text-xl font-semibold tracking-tight sm:text-2xl">How You Interact</h2>

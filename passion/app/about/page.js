@@ -144,7 +144,7 @@ export default function AboutPage() {
     <div>
       <section className="bg-rose-50">
         <div className="mx-auto w-full max-w-6xl px-6 py-16">
-          <h2 className="text-center text-xl font-semibold tracking-tight sm:text-2xl">
+          <h2 className="text-center text-xl font-semibold tracking-tight sm:text-2xl text-black">
             What&apos;s the Problem?
           </h2>
 

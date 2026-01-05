@@ -101,7 +101,7 @@ async function callOpenAI({ snapshot, transactions, periodDays }) {
   const model = process.env.OPENAI_MODEL || "gpt-4o-mini";
 
   const system =
-    "You are a helpful budgeting coach. Summarize the user\'s finances for the last period and give actionable suggestions to save more and reduce unnecessary spending. Be supportive and specific. Avoid shaming. Keep it concise.";
+    "You are a professional financial advisor and budgeting coach. Analyze the user's spending patterns and provide detailed, actionable advice with specific weekly limits, spending targets, and step-by-step action plans. Be supportive, specific, and practical. Include exact dollar amounts for recommendations when possible. Focus on behavioral changes and measurable goals.";
 
   const user = {
     periodDays,
@@ -109,10 +109,11 @@ async function callOpenAI({ snapshot, transactions, periodDays }) {
     transactions,
     instructions: {
       outputFormat: {
-        summary: "string (2-4 sentences)",
-        highlights: "array of 3-6 bullets",
-        suggestions: "array of 5-8 actionable tips (prioritize unnecessary spending + savings)",
-        watchouts: "array of 0-4 short cautions (e.g., subscriptions, impulse buys)",
+        summary: "string (2-3 sentences overview)",
+        highlights: "array of 3-5 positive achievements or patterns",
+        suggestions: "array of 6-10 detailed actionable recommendations with specific dollar limits, weekly targets, and step-by-step action plans",
+        watchouts: "array of 2-4 specific warnings with exact spending limits to avoid overspending",
+        actionPlan: "object with weeklyGoals (array of 3-4 specific weekly financial goals with dollar amounts), spendingLimits (object with category limits), and quickWins (array of 3-4 immediate actions user can take this week)",
         disclaimer: "one short sentence: educational, not financial advice",
       },
     },
@@ -132,7 +133,7 @@ async function callOpenAI({ snapshot, transactions, periodDays }) {
         {
           role: "user",
           content:
-            "Return ONLY valid JSON with keys summary, highlights, suggestions, watchouts, disclaimer. Data: " +
+            "Return ONLY valid JSON with keys summary, highlights, suggestions, watchouts, actionPlan, disclaimer. Provide specific dollar amounts, weekly limits, and detailed action steps. Data: " +
             JSON.stringify(user),
         },
       ],
@@ -163,6 +164,11 @@ async function callOpenAI({ snapshot, transactions, periodDays }) {
         highlights: [],
         suggestions: [],
         watchouts: [],
+        actionPlan: {
+          weeklyGoals: [],
+          spendingLimits: {},
+          quickWins: []
+        },
         disclaimer: "Educational only; not financial advice.",
       },
     };
