@@ -1,4 +1,3 @@
-import { prisma } from '../../lib/prisma';
 import { NextResponse } from 'next/server';
 
 // Fallback user data for when database is unavailable
@@ -14,6 +13,7 @@ export async function POST(request) {
 
     // Try database first
     try {
+      const { prisma } = await import('../../lib/prisma');
       // Check if user already exists
       const existingUser = await prisma.user.findUnique({
         where: { email }

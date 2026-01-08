@@ -81,6 +81,17 @@ export default function AiInsightsClient({ transactions = [] }) {
 
   const insights = payload?.insights;
 
+  function toText(item) {
+    if (typeof item === 'string') return item;
+    if (!item) return '';
+    if (typeof item === 'object') {
+      const candidate = item.recommendation || item.text || item.warning;
+      if (typeof candidate === 'string') return candidate;
+      if (candidate) return JSON.stringify(candidate);
+      return JSON.stringify(item);
+    }
+    return String(item);
+  }
   return (
     <section className="rounded-2xl border border-foreground/10 bg-background p-6 shadow-sm">
       <div className="flex flex-wrap items-start justify-between gap-4">
@@ -107,7 +118,7 @@ export default function AiInsightsClient({ transactions = [] }) {
         <div className="mt-6">
           <div className="rounded-xl bg-foreground/5 p-5">
             <div className="text-sm font-semibold text-foreground/80">Summary</div>
-            <div className="mt-2 text-sm leading-6 text-foreground/70">{insights.summary}</div>
+            <div className="mt-2 text-sm leading-6 text-foreground/70">{toText(insights.summary)}</div>
           </div>
 
           {Array.isArray(insights.highlights) && insights.highlights.length ? (
@@ -119,7 +130,7 @@ export default function AiInsightsClient({ transactions = [] }) {
                     <span className="mt-0.5 text-emerald-600" aria-hidden="true">
                       ✓
                     </span>
-                    <span>{h}</span>
+                    <span>{toText(h)}</span>
                   </li>
                 ))}
               </ul>
@@ -131,8 +142,7 @@ export default function AiInsightsClient({ transactions = [] }) {
               <div className="text-sm font-semibold text-foreground/80">Suggestions</div>
               <ul className="mt-3 space-y-2 text-sm text-foreground/70">
                 {insights.suggestions.map((s, index) => {
-                  // Handle both string and object formats
-                  const text = typeof s === 'string' ? s : (s.recommendation || s.text || JSON.stringify(s));
+                  const text = toText(s) || '';
                   return (
                     <li key={`suggestion-${index}`} className="flex items-start gap-3">
                       <span className="mt-0.5 text-blue-600" aria-hidden="true">
@@ -155,7 +165,7 @@ export default function AiInsightsClient({ transactions = [] }) {
                     <span className="mt-0.5 text-rose-600" aria-hidden="true">
                       !
                     </span>
-                    <span>{w}</span>
+                    <span>{toText(w)}</span>
                   </li>
                 ))}
               </ul>
@@ -176,7 +186,7 @@ export default function AiInsightsClient({ transactions = [] }) {
                         <span className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-blue-600 text-xs font-semibold text-white">
                           {index + 1}
                         </span>
-                        <span className="flex-1 text-sm leading-relaxed text-blue-900">{goal || 'No goal specified'}</span>
+                        <span className="flex-1 text-sm leading-relaxed text-blue-900">{toText(goal) || 'No goal specified'}</span>
                       </li>
                     ))}
                   </ul>
@@ -189,11 +199,11 @@ export default function AiInsightsClient({ transactions = [] }) {
                   <div className="text-sm font-semibold text-amber-800 mb-3">Weekly Spending Limits</div>
                   <div className="grid gap-3 sm:grid-cols-2">
                     {Object.entries(insights.actionPlan.spendingLimits).map(([category, limit]) => (
-                      <div key={category} className="flex items-center justify-between bg-amber-100 rounded-lg px-3 py-2">
-                        <span className="text-sm font-medium text-amber-800">{category}</span>
-                        <span className="text-sm font-bold text-amber-900">{limit}</span>
-                      </div>
-                    ))}
+                          <div key={category} className="flex items-center justify-between bg-amber-100 rounded-lg px-3 py-2">
+                            <span className="text-sm font-medium text-amber-800">{category}</span>
+                            <span className="text-sm font-bold text-amber-900">{toText(limit)}</span>
+                          </div>
+                        ))}
                   </div>
                 </div>
               ) : null}
@@ -208,7 +218,7 @@ export default function AiInsightsClient({ transactions = [] }) {
                         <span className="mt-0.5 flex-shrink-0 text-emerald-600" aria-hidden="true">
                           🎯
                         </span>
-                        <span className="flex-1 text-sm leading-relaxed text-emerald-900">{win || 'No action specified'}</span>
+                        <span className="flex-1 text-sm leading-relaxed text-emerald-900">{toText(win) || 'No action specified'}</span>
                       </li>
                     ))}
                   </ul>
