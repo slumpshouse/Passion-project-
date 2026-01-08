@@ -3,8 +3,8 @@ import GoalsPanelClient from "./GoalsPanelClient";
 import TransactionDashboard from "./TransactionDashboard";
 
 export const metadata = {
-  title: "Dashboard · Budget Tracker",
-  description: "Dashboard preview for Budget Tracker.",
+  title: "Dashboard · BudgetWise",
+  description: "Dashboard preview for BudgetWise.",
 };
 
 function StatCard({ title, amount, sub, iconBg = "bg-blue-50", iconColor = "text-blue-600" }) {

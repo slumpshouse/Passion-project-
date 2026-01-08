@@ -2,80 +2,230 @@
 
 import { useState, useEffect } from "react";
 
-export default function GoalsPanelClient({ initialGoals = [] }) {
+function clampPct(value) {
+  return Math.max(0, Math.min(100, value));
+}
+
+function formatMoney(value) {
+  const num = typeof value === "number" && Number.isFinite(value) ? value : 0;
+  return `$${num.toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
+}
+
+function toUiGoal(goal) {
+  const targetAmount = typeof goal?.targetAmount === "number" ? goal.targetAmount : 0;
+  const currentAmount = typeof goal?.currentAmount === "number" ? goal.currentAmount : 0;
+  const pct = targetAmount > 0 ? Math.round((currentAmount / targetAmount) * 100) : 0;
+  return {
+    id: goal.id,
+    name: goal.name,
+    targetAmount,
+    currentAmount,
+    pct: clampPct(pct),
+    left: formatMoney(currentAmount),
+    right: formatMoney(targetAmount),
+    color: goal.color || "bg-blue-600",
+  };
+}
+
+export default function GoalsPanelClient({ userId }) {
   const [goals, setGoals] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState({ name: "", target: "", current: "" });
   const [editingGoal, setEditingGoal] = useState(null);
 
-  // Load goals from localStorage on component mount
-  useEffect(() => {
-    const savedGoals = localStorage.getItem('user_savings_goals');
-    if (savedGoals) {
-      setGoals(JSON.parse(savedGoals));
-    } else {
-      // Start with no default goals for new users
-      setGoals([]);
-    }
-  }, []);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  // Save goals to localStorage whenever goals change
+  // Load goals from DB when logged in; otherwise fall back to localStorage.
   useEffect(() => {
-    if (goals.length > 0) {
-      localStorage.setItem('user_savings_goals', JSON.stringify(goals));
-    } else {
-      // Remove the storage key when there are no goals so new users see a blank state
-      localStorage.removeItem('user_savings_goals');
-    }
-  }, [goals]);
+    let cancelled = false;
+    setError("");
 
-  const addGoal = () => {
+    async function loadFromDb() {
+      setLoading(true);
+      try {
+        const resp = await fetch(`/api/goals?userId=${encodeURIComponent(userId)}`);
+        const data = await resp.json().catch(() => null);
+        if (!resp.ok || !data?.success) {
+          throw new Error(data?.error || `Failed to fetch goals (${resp.status})`);
+        }
+        if (!cancelled) {
+          const mapped = Array.isArray(data.goals) ? data.goals.map(toUiGoal) : [];
+          setGoals(mapped);
+        }
+      } catch (e) {
+        if (!cancelled) {
+          setError(e?.message || "Failed to fetch goals");
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+
+    function loadFromLocalStorage() {
+      try {
+        const storageKey = userId ? `user_savings_goals_${userId}` : "user_savings_goals";
+        const savedGoals = localStorage.getItem(storageKey);
+        if (savedGoals) setGoals(JSON.parse(savedGoals));
+        else setGoals([]);
+      } catch {
+        setGoals([]);
+      }
+    }
+
+    if (userId) loadFromDb();
+    else loadFromLocalStorage();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [userId]);
+
+  // Save goals to localStorage only when logged out.
+  useEffect(() => {
+    if (userId) return;
+    try {
+      const storageKey = "user_savings_goals";
+      if (goals.length > 0) {
+        localStorage.setItem(storageKey, JSON.stringify(goals));
+      } else {
+        localStorage.removeItem(storageKey);
+      }
+    } catch {
+      // ignore
+    }
+  }, [goals, userId]);
+
+  const addGoal = async () => {
     const targetNum = parseFloat(form.target) || 0;
     const currentNum = parseFloat(form.current) || 0;
     const pct = targetNum > 0 ? Math.round((currentNum / targetNum) * 100) : 0;
+
+    setError("");
     
     if (editingGoal) {
       // Update existing goal
       const updatedGoal = {
         ...editingGoal,
         name: form.name || editingGoal.name,
-        pct: Math.max(0, Math.min(100, pct)),
-        left: `$${currentNum.toLocaleString(undefined, { maximumFractionDigits: 2 })}`,
-        right: `$${targetNum.toLocaleString(undefined, { maximumFractionDigits: 2 })}`,
+        targetAmount: targetNum,
+        currentAmount: currentNum,
+        pct: clampPct(pct),
+        left: formatMoney(currentNum),
+        right: formatMoney(targetNum),
       };
-      setGoals(prev => prev.map(g => g.id === editingGoal.id ? updatedGoal : g));
+
+      if (userId && editingGoal.id && !String(editingGoal.id).startsWith("user-")) {
+        try {
+          setLoading(true);
+          const resp = await fetch("/api/goals", {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              id: editingGoal.id,
+              name: updatedGoal.name,
+              targetAmount: targetNum,
+              currentAmount: currentNum,
+              deadline: null,
+              color: updatedGoal.color,
+            }),
+          });
+          const data = await resp.json().catch(() => null);
+          if (!resp.ok || !data?.success) {
+            throw new Error(data?.error || `Failed to update goal (${resp.status})`);
+          }
+          setGoals((prev) => prev.map((g) => (g.id === editingGoal.id ? toUiGoal(data.goal) : g)));
+        } catch (e) {
+          setError(e?.message || "Failed to update goal");
+        } finally {
+          setLoading(false);
+        }
+      } else {
+        setGoals((prev) => prev.map((g) => (g.id === editingGoal.id ? updatedGoal : g)));
+      }
+
       setEditingGoal(null);
     } else {
       // Add new goal
       const colors = ["bg-blue-600", "bg-violet-500", "bg-emerald-500", "bg-amber-500", "bg-pink-500", "bg-indigo-500"];
       const colorIndex = goals.filter(g => !g.isDefault).length % colors.length;
-      
-      const newGoal = {
-        id: `user-${Date.now()}`,
-        name: form.name || "New Goal",
-        pct: Math.max(0, Math.min(100, pct)),
-        left: `$${currentNum.toLocaleString(undefined, { maximumFractionDigits: 2 })}`,
-        right: `$${targetNum.toLocaleString(undefined, { maximumFractionDigits: 2 })}`,
-        color: colors[colorIndex],
-        isDefault: false
-      };
-      setGoals((s) => [newGoal, ...s]);
+
+      const name = form.name || "New Goal";
+      const color = colors[colorIndex];
+
+      if (userId) {
+        try {
+          setLoading(true);
+          const resp = await fetch("/api/goals", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              userId,
+              name,
+              targetAmount: targetNum,
+              currentAmount: currentNum,
+              deadline: null,
+              color,
+            }),
+          });
+          const data = await resp.json().catch(() => null);
+          if (!resp.ok || !data?.success) {
+            throw new Error(data?.error || `Failed to create goal (${resp.status})`);
+          }
+          setGoals((s) => [toUiGoal(data.goal), ...s]);
+        } catch (e) {
+          setError(e?.message || "Failed to create goal");
+        } finally {
+          setLoading(false);
+        }
+      } else {
+        const newGoal = {
+          id: `user-${Date.now()}`,
+          name,
+          targetAmount: targetNum,
+          currentAmount: currentNum,
+          pct: clampPct(pct),
+          left: formatMoney(currentNum),
+          right: formatMoney(targetNum),
+          color,
+          isDefault: false,
+        };
+        setGoals((s) => [newGoal, ...s]);
+      }
     }
     setForm({ name: "", target: "", current: "" });
     setShowForm(false);
   };
 
-  const deleteGoal = (goalId) => {
+  const deleteGoal = async (goalId) => {
     if (confirm('Are you sure you want to delete this goal?')) {
-      setGoals(prev => prev.filter(goal => goal.id !== goalId));
+      setError("");
+      if (userId && goalId && !String(goalId).startsWith("user-")) {
+        try {
+          setLoading(true);
+          const resp = await fetch(`/api/goals?id=${encodeURIComponent(goalId)}`, {
+            method: "DELETE",
+          });
+          const data = await resp.json().catch(() => null);
+          if (!resp.ok || !data?.success) {
+            throw new Error(data?.error || `Failed to delete goal (${resp.status})`);
+          }
+          setGoals((prev) => prev.filter((goal) => goal.id !== goalId));
+        } catch (e) {
+          setError(e?.message || "Failed to delete goal");
+        } finally {
+          setLoading(false);
+        }
+      } else {
+        setGoals((prev) => prev.filter((goal) => goal.id !== goalId));
+      }
     }
   };
 
   const editGoal = (goal) => {
     setEditingGoal(goal);
-    // Parse current amounts from the goal's left and right values
-    const currentAmount = parseFloat(goal.left.replace(/[^0-9.]/g, '')) || 0;
-    const targetAmount = parseFloat(goal.right.replace(/[^0-9.]/g, '')) || 0;
+    const currentAmount = typeof goal?.currentAmount === "number" ? goal.currentAmount : parseFloat(goal.left?.replace(/[^0-9.]/g, '')) || 0;
+    const targetAmount = typeof goal?.targetAmount === "number" ? goal.targetAmount : parseFloat(goal.right?.replace(/[^0-9.]/g, '')) || 0;
     
     setForm({
       name: goal.name,
@@ -100,6 +250,20 @@ export default function GoalsPanelClient({ initialGoals = [] }) {
       </div>
 
       <div className="mt-6 space-y-6">
+        {!userId ? (
+          <div className="text-xs text-foreground/60">
+            You’re not logged in. Goals will only save on this device.
+          </div>
+        ) : null}
+
+        {error ? (
+          <div className="text-sm text-red-500">{error}</div>
+        ) : null}
+
+        {loading ? (
+          <div className="text-sm text-foreground/60">Loading…</div>
+        ) : null}
+
         {goals.length === 0 && (
           <div className="text-sm text-foreground/60">
             No savings goals yet. Click "Add New Goal" to create your first goal.

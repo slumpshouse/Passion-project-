@@ -8,13 +8,13 @@
 @layer base {
   :root {
     /* Core color tokens */
-    --bg: #f7fafc; /* light neutral background */
-    --surface: #ffffff; /* card / surface */
-    --muted: #6b7280; /* muted text */
-    --text: #0f172a; /* primary text (dark) */
-    --primary: #2563eb; /* blue-600 */
-    --accent: #7c3aed; /* violet */
-    --glass: rgba(255,255,255,0.6);
+    --bg: #000000; /* black background */
+    --surface: #0f1724; /* card / surface */
+    --muted: #94a3b8; /* muted text */
+    --text: #e6eef8; /* primary text (light) */
+    --primary: #3b82f6; /* blue-500 */
+    --accent: #8b5cf6; /* violet */
+    --glass: rgba(15,23,36,0.6);
 
     /* shadows / glows */
     --shadow-sm: 0 1px 2px rgba(16,24,40,0.04);
@@ -27,7 +27,7 @@
 
   @media (prefers-color-scheme: dark) {
     :root {
-      --bg: #0a0b0f;
+      --bg: #000000;
       --surface: #0f1724;
       --muted: #94a3b8;
       --text: #e6eef8;
@@ -46,7 +46,7 @@
   }
 
   body {
-    background: linear-gradient(180deg, var(--bg), color-mix(in srgb, var(--bg) 96%, #ffffff 4%));
+    background: var(--bg);
     color: var(--text);
     font-family: var(--font-geist-sans), system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
     -webkit-font-smoothing: antialiased;
@@ -74,7 +74,7 @@
     border: none; cursor: pointer; font-weight: 600; transition: transform 160ms var(--ease), box-shadow 160ms var(--ease), background-color 160ms var(--ease);
   }
 
-  .btn-primary { background: linear-gradient(90deg,var(--primary), color-mix(in srgb,var(--primary) 70%, var(--accent) 30%)); color: white; box-shadow: var(--shadow-sm); }
+  .btn-primary { background: linear-gradient(90deg,var(--primary), color-mix(in srgb,var(--primary) 70%, var(--accent) 30%)); color: var(--text); box-shadow: var(--shadow-sm); }
   .btn-primary:hover { transform: translateY(-3px); box-shadow: var(--glow); }
 
   .btn-ghost { background: transparent; color: var(--text); border: 1px solid color-mix(in srgb,var(--text) 8%, transparent); }
@@ -106,7 +106,9 @@
 
   /* improve a11y contrast where Tailwind uses low-contrast text */
   .text-foreground\/70 { color: var(--muted) !important; }
+
+  /* Normalize Tailwind "white" text to a single theme color */
+  .text-white { color: var(--text) !important; }
+  .text-white\/95 { color: var(--text) !important; }
 }
 
-/* keep a small fallback override to ensure components inherit text color */
-h1,h2,h3,h4,h5,h6,p,li,a,span,button,label,input,textarea { color: var(--text) !important; }

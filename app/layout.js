@@ -13,17 +13,19 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Budget Tracker",
+  title: "BudgetWise",
   description: "Track spending, set goals, and stay on budget.",
 };
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <div className="min-h-screen bg-background text-foreground font-sans">
+    <html lang="en" className="h-full">
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased h-full`}>
+        <div className="flex flex-col min-h-screen bg-background text-foreground font-sans">
           <Header />
-          {children}
+          <div className="flex-1">
+            {children}
+          </div>
         </div>
       </body>
     </html>

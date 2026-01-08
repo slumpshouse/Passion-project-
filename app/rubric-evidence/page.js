@@ -49,9 +49,9 @@ export default function RubricEvidencePage() {
         {
           title: "Understand & Identify",
           description: "How well can I create a project plan?",
-          evidence: "/reflection - CCC.1.1 section",
+          evidence: "/why-us - Project Plan Summary section",
           status: "Complete",
-          file: "app/reflection/page.js"
+          file: "app/why-us/page.js"
         }
       ]
     },
@@ -61,9 +61,9 @@ export default function RubricEvidencePage() {
         {
           title: "Plan Solution",
           description: "How well do I follow guidelines to create a high quality product?",
-          evidence: "/reflection - CCC.1.2 section",
+          evidence: "/why-us - Project Plan section",
           status: "Complete",
-          file: "app/reflection/page.js"
+          file: "app/why-us/page.js"
         }
       ]
     },
@@ -73,9 +73,9 @@ export default function RubricEvidencePage() {
         {
           title: "Implementation",
           description: "How well do I create a product that solves a real-world problem and impacts an authentic audience?",
-          evidence: "/reflection - CCC.1.3 section",
+          evidence: "/why-us - Implementation section",
           status: "Complete",
-          file: "app/reflection/page.js"
+          file: "app/why-us/page.js"
         }
       ]
     }
@@ -143,16 +143,12 @@ export default function RubricEvidencePage() {
                     <div className="space-y-3">
                       <div>
                         <div className="text-xs font-medium text-foreground/60 mb-1">Evidence Location:</div>
-                        <div className="text-sm bg-foreground/10 rounded-lg px-3 py-2 font-mono">
+                        <Link 
+                          href={item.evidence.startsWith('/why-us') ? '/why-us' : '/reflection'}
+                          className="block text-sm bg-foreground/10 hover:bg-foreground/15 rounded-lg px-3 py-2 font-mono transition-colors"
+                        >
                           {item.evidence}
-                        </div>
-                      </div>
-                      
-                      <div>
-                        <div className="text-xs font-medium text-foreground/60 mb-1">Implementation File:</div>
-                        <div className="text-sm bg-blue-50 text-blue-700 rounded-lg px-3 py-2 font-mono">
-                          {item.file}
-                        </div>
+                        </Link>
                       </div>
                     </div>
                   </div>
@@ -162,44 +158,7 @@ export default function RubricEvidencePage() {
           ))}
         </div>
 
-        {/* Project Summary */}
-        <div className="mt-10 rounded-3xl bg-blue-50 border border-blue-200 p-6 sm:p-10">
-          <h2 className="text-xl font-semibold tracking-tight mb-4">Project Summary</h2>
-          <div className="grid gap-6 lg:grid-cols-3">
-            <div className="rounded-2xl bg-white/60 p-6">
-              <h3 className="text-base font-semibold mb-3">Technical Stack</h3>
-              <ul className="text-sm text-foreground/70 space-y-1">
-                <li>• Next.js 16.1 (React Framework)</li>
-                <li>• Tailwind CSS (Styling)</li>
-                <li>• OpenAI API (AI Insights)</li>
-                <li>• Local Storage (Data Persistence)</li>
-                <li>• JavaScript/ES6+ (Logic)</li>
-              </ul>
-            </div>
-            
-            <div className="rounded-2xl bg-white/60 p-6">
-              <h3 className="text-base font-semibold mb-3">Key Features</h3>
-              <ul className="text-sm text-foreground/70 space-y-1">
-                <li>• Transaction tracking & categorization</li>
-                <li>• Visual spending analytics</li>
-                <li>• Savings goal management</li>
-                <li>• AI-powered financial insights</li>
-                <li>• Role-based access control</li>
-              </ul>
-            </div>
-            
-            <div className="rounded-2xl bg-white/60 p-6">
-              <h3 className="text-base font-semibold mb-3">Documentation</h3>
-              <ul className="text-sm text-foreground/70 space-y-1">
-                <li>• Complete solution documentation</li>
-                <li>• 6-week development timeline</li>
-                <li>• Challenge analysis & mitigation</li>
-                <li>• User interaction specifications</li>
-                <li>• Technical implementation details</li>
-              </ul>
-            </div>
-          </div>
-        </div>
+        {/* Project Summary removed */}
       </div>
     </main>
   );

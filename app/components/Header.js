@@ -77,13 +77,18 @@ export default function Header() {
               <path d="M9 15h4" />
             </svg>
           </span>
-          <span className="text-sm font-semibold tracking-tight">Budget Tracker</span>
+          <span className="text-sm font-semibold tracking-tight">BudgetWise</span>
         </Link>
 
         <nav className="hidden flex-1 items-center justify-center gap-8 text-sm text-foreground/70 sm:flex">
           <Link className="hover:text-foreground" href="/">
             Home
           </Link>
+          {user && (
+            <Link className="hover:text-foreground" href="/dashboard">
+              Dashboard
+            </Link>
+          )}
           <Link className="hover:text-foreground" href="/about">
             About
           </Link>
@@ -93,7 +98,6 @@ export default function Header() {
           <Link className="hover:text-foreground" href="/why-us">
             Why Us
           </Link>
-          {/* Dashboard link removed per request */}
           {user && user.role === 'admin' && (
             <Link className="hover:text-foreground" href="/reflection">
               Reflection

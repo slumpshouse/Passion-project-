@@ -2,9 +2,6 @@
 
 import { useEffect, useMemo, useState } from "react";
 
-const STORAGE_KEY = "bt_biweekly_insights";
-const STORAGE_AT_KEY = "bt_biweekly_insights_at";
-
 function nowMs() {
   return Date.now();
 }
@@ -25,10 +22,22 @@ export default function AiInsightsClient({ transactions = [] }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [payload, setPayload] = useState(null);
+  const [userId, setUserId] = useState(null);
 
   const tx = useMemo(() => transactions, [transactions]);
 
+  // Get userId on mount
+  useEffect(() => {
+    const user = localStorage.getItem('currentUser');
+    if (user) {
+      const parsedUser = JSON.parse(user);
+      setUserId(parsedUser.id);
+    }
+  }, []);
+
   async function generate({ automatic = false } = {}) {
+    const STORAGE_KEY = userId ? `bt_biweekly_insights_${userId}` : "bt_biweekly_insights";
+    const STORAGE_AT_KEY = userId ? `bt_biweekly_insights_at_${userId}` : "bt_biweekly_insights_at";
     setLoading(true);
     setError("");
 
@@ -57,6 +66,9 @@ export default function AiInsightsClient({ transactions = [] }) {
   }
 
   useEffect(() => {
+    if (!userId) return;
+    const STORAGE_KEY = `bt_biweekly_insights_${userId}`;
+    const STORAGE_AT_KEY = `bt_biweekly_insights_at_${userId}`;
     const cached = safeJsonParse(localStorage.getItem(STORAGE_KEY) || "");
     const lastAt = Number(localStorage.getItem(STORAGE_AT_KEY) || "0");
 
@@ -65,7 +77,7 @@ export default function AiInsightsClient({ transactions = [] }) {
     const shouldAuto = !lastAt || nowMs() - lastAt >= daysToMs(14);
     if (shouldAuto) generate({ automatic: true });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [userId]);
 
   const insights = payload?.insights;
 
@@ -102,8 +114,8 @@ export default function AiInsightsClient({ transactions = [] }) {
             <div className="mt-6">
               <div className="text-sm font-semibold text-foreground/80">Highlights</div>
               <ul className="mt-3 space-y-2 text-sm text-foreground/70">
-                {insights.highlights.map((h) => (
-                  <li key={h} className="flex items-start gap-3">
+                {insights.highlights.map((h, index) => (
+                  <li key={`highlight-${index}`} className="flex items-start gap-3">
                     <span className="mt-0.5 text-emerald-600" aria-hidden="true">
                       ✓
                     </span>
@@ -118,14 +130,18 @@ export default function AiInsightsClient({ transactions = [] }) {
             <div className="mt-6">
               <div className="text-sm font-semibold text-foreground/80">Suggestions</div>
               <ul className="mt-3 space-y-2 text-sm text-foreground/70">
-                {insights.suggestions.map((s) => (
-                  <li key={s} className="flex items-start gap-3">
-                    <span className="mt-0.5 text-blue-600" aria-hidden="true">
-                      →
-                    </span>
-                    <span>{s}</span>
-                  </li>
-                ))}
+                {insights.suggestions.map((s, index) => {
+                  // Handle both string and object formats
+                  const text = typeof s === 'string' ? s : (s.recommendation || s.text || JSON.stringify(s));
+                  return (
+                    <li key={`suggestion-${index}`} className="flex items-start gap-3">
+                      <span className="mt-0.5 text-blue-600" aria-hidden="true">
+                        →
+                      </span>
+                      <span>{text}</span>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           ) : null}
@@ -134,8 +150,8 @@ export default function AiInsightsClient({ transactions = [] }) {
             <div className="mt-6">
               <div className="text-sm font-semibold text-foreground/80">Watchouts</div>
               <ul className="mt-3 space-y-2 text-sm text-foreground/70">
-                {insights.watchouts.map((w) => (
-                  <li key={w} className="flex items-start gap-3">
+                {insights.watchouts.map((w, index) => (
+                  <li key={`watchout-${index}`} className="flex items-start gap-3">
                     <span className="mt-0.5 text-rose-600" aria-hidden="true">
                       !
                     </span>
@@ -154,13 +170,13 @@ export default function AiInsightsClient({ transactions = [] }) {
               {Array.isArray(insights.actionPlan.weeklyGoals) && insights.actionPlan.weeklyGoals.length ? (
                 <div className="rounded-xl bg-blue-50 border border-blue-200 p-5">
                   <div className="text-sm font-semibold text-blue-800 mb-3">This Week's Goals</div>
-                  <ul className="space-y-2 text-sm text-blue-700">
+                  <ul className="space-y-3">
                     {insights.actionPlan.weeklyGoals.map((goal, index) => (
-                      <li key={goal} className="flex items-start gap-3">
-                        <span className="mt-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-blue-600 text-xs font-semibold text-white">
+                      <li key={`goal-${index}`} className="flex items-start gap-3">
+                        <span className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-blue-600 text-xs font-semibold text-white">
                           {index + 1}
                         </span>
-                        <span>{goal}</span>
+                        <span className="flex-1 text-sm leading-relaxed text-blue-900">{goal || 'No goal specified'}</span>
                       </li>
                     ))}
                   </ul>
@@ -186,13 +202,13 @@ export default function AiInsightsClient({ transactions = [] }) {
               {Array.isArray(insights.actionPlan.quickWins) && insights.actionPlan.quickWins.length ? (
                 <div className="rounded-xl bg-emerald-50 border border-emerald-200 p-5">
                   <div className="text-sm font-semibold text-emerald-800 mb-3">Quick Wins (Start Today!)</div>
-                  <ul className="space-y-2 text-sm text-emerald-700">
-                    {insights.actionPlan.quickWins.map((win) => (
-                      <li key={win} className="flex items-start gap-3">
-                        <span className="mt-0.5 text-emerald-600" aria-hidden="true">
+                  <ul className="space-y-3">
+                    {insights.actionPlan.quickWins.map((win, index) => (
+                      <li key={`win-${index}`} className="flex items-start gap-3">
+                        <span className="mt-0.5 flex-shrink-0 text-emerald-600" aria-hidden="true">
                           🎯
                         </span>
-                        <span>{win}</span>
+                        <span className="flex-1 text-sm leading-relaxed text-emerald-900">{win || 'No action specified'}</span>
                       </li>
                     ))}
                   </ul>

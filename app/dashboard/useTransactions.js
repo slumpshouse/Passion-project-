@@ -7,7 +7,7 @@ export default function TransactionManager() {
 
   // Load transactions from localStorage on mount
   useEffect(() => {
-    const saved = localStorage.getItem('budgetTracker_transactions');
+    const saved = localStorage.getItem('budgetWise_transactions');
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
@@ -21,7 +21,7 @@ export default function TransactionManager() {
 
   // Save transactions to localStorage whenever transactions change
   useEffect(() => {
-    localStorage.setItem('budgetTracker_transactions', JSON.stringify(transactions));
+    localStorage.setItem('budgetWise_transactions', JSON.stringify(transactions));
   }, [transactions]);
 
   const addTransaction = (transaction) => {

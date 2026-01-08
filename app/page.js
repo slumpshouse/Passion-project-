@@ -105,8 +105,8 @@ export default function Home() {
         <section className="pb-10 pt-6 sm:pb-14">
           <div className="mx-auto max-w-2xl text-center">
             <div className="flex justify-center">
-              <span className="inline-flex items-center rounded-full bg-blue-50 px-4 py-2 text-xs font-medium text-blue-700">
-                Budget Tracker · Best for students &amp; young professionals
+                <span className="inline-flex items-center rounded-full bg-blue-50 px-4 py-2 text-xs font-medium text-blue-700">
+                BudgetWise · Best for students &amp; young professionals
               </span>
             </div>
             <h1 className="text-balance text-4xl font-semibold leading-tight tracking-tight sm:text-5xl">
@@ -229,7 +229,7 @@ export default function Home() {
         </section>
 
         <footer className="mt-6 border-t border-foreground/10 py-8 text-center text-sm text-foreground/60">
-          © {new Date().getFullYear()} Budget Tracker. All rights reserved.
+          © {new Date().getFullYear()} BudgetWise. All rights reserved.
         </footer>
     </main>
   );

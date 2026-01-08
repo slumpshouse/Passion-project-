@@ -1,5 +1,13 @@
-import fs from "node:fs";
-import path from "node:path";
+function getOpenAIApiKey() {
+  const raw = process.env.OPENAI_API_KEY;
+  if (!raw) return null;
+  return raw
+    .trim()
+    .replace(/^\uFEFF/, "")
+    .replace(/^Bearer\s+/i, "")
+    .replace(/^"|"$/g, "")
+    .replace(/^'|'$/g, "");
+}
 
 function parseMoney(value) {
   if (typeof value === "number") return value;
@@ -37,7 +45,7 @@ function computeSnapshot(transactions) {
   const byCategory = new Map();
 
   for (const t of transactions) {
-    const isIncome = t.tone === "income" || t.amount > 0;
+    const isIncome = typeof t.tone === "string" ? t.tone === "income" : t.amount > 0;
     const abs = Math.abs(t.amount);
 
     if (isIncome) income += abs;
@@ -67,41 +75,40 @@ function computeSnapshot(transactions) {
 }
 
 async function callOpenAI({ snapshot, transactions, periodDays }) {
-  if (!process.env.OPENAI_API_KEY) {
-    try {
-      const rootEnvPath = path.join(process.cwd(), "..", ".env");
-      if (fs.existsSync(rootEnvPath)) {
-        const raw = fs.readFileSync(rootEnvPath, "utf8");
-        const line = raw
-          .split(/\r?\n/)
-          .map((l) => l.trim())
-          .find((l) => l && !l.startsWith("#") && l.startsWith("OPENAI_API_KEY="));
-
-        if (line) {
-          const value = line.split("=").slice(1).join("=").trim();
-          const unquoted = value.replace(/^"|"$/g, "").replace(/^'|'$/g, "");
-          if (unquoted) process.env.OPENAI_API_KEY = unquoted;
-        }
-      }
-    } catch {
-      // Ignore env file load errors; we'll fall back to standard env lookup.
-    }
-  }
-
-  const apiKey = process.env.OPENAI_API_KEY;
+  const apiKey = getOpenAIApiKey();
   if (!apiKey) {
     return {
       ok: false,
       status: 400,
       error:
-        "Missing OPENAI_API_KEY. Put it in passion/.env.local (recommended) or passion/.env, then restart the dev server.",
+        "Missing OPENAI_API_KEY. Put it in .env.local (recommended) or .env (project root), then restart the dev server.",
     };
+  }
+
+  // Basic validation: OpenAI API keys generally start with `sk-` (including `sk-proj-`).
+  // If this fails, the user likely pasted a session token or some other credential.
+  const looksLikeOpenAIKey = apiKey.startsWith("sk-");
+  if (!looksLikeOpenAIKey) {
+    return {
+      ok: false,
+      status: 400,
+      error:
+        "OPENAI_API_KEY doesn't look like a valid OpenAI API key (expected it to start with 'sk-'). Generate an API key at https://platform.openai.com/api-keys, paste it into .env.local as OPENAI_API_KEY=sk-..., then restart the dev server.",
+    };
+  }
+
+  if (process.env.NODE_ENV !== "production") {
+    console.info("OpenAI key loaded", {
+      startsWithSk: apiKey.startsWith("sk-"),
+      length: apiKey.length,
+      last4: apiKey.slice(-4),
+    });
   }
 
   const model = process.env.OPENAI_MODEL || "gpt-4o-mini";
 
   const system =
-    "You are a professional financial advisor and budgeting coach. Analyze the user's spending patterns and provide detailed, actionable advice with specific weekly limits, spending targets, and step-by-step action plans. Be supportive, specific, and practical. Include exact dollar amounts for recommendations when possible. Focus on behavioral changes and measurable goals.";
+    "You are a financial advisor specializing in helping students and young adults build healthy money habits. IMPORTANT: Carefully analyze the user's ACTUAL spending data (categories, amounts, frequency, patterns) and provide PERSONALIZED advice based on their specific situation. Reference their real spending categories and amounts in your suggestions. For example, if they spent $150 on dining out, suggest specific ways THEY can reduce that exact expense. If they have subscription charges, name those categories specifically. Make every recommendation directly tied to their actual transactions and spending patterns. Be supportive, specific, and relatable. Include exact dollar amounts from their data. Focus on behavioral changes, small wins, and building consistent saving habits that address their unique spending habits.";
 
   const user = {
     periodDays,
@@ -111,7 +118,7 @@ async function callOpenAI({ snapshot, transactions, periodDays }) {
       outputFormat: {
         summary: "string (2-3 sentences overview)",
         highlights: "array of 3-5 positive achievements or patterns",
-        suggestions: "array of 6-10 detailed actionable recommendations with specific dollar limits, weekly targets, and step-by-step action plans",
+        suggestions: "array of 4-5 detailed, high-impact actionable recommendations with specific dollar limits, weekly targets, and step-by-step action plans. Focus on the most important changes that will have the biggest financial impact.",
         watchouts: "array of 2-4 specific warnings with exact spending limits to avoid overspending",
         actionPlan: "object with weeklyGoals (array of 3-4 specific weekly financial goals with dollar amounts), spendingLimits (object with category limits), and quickWins (array of 3-4 immediate actions user can take this week)",
         disclaimer: "one short sentence: educational, not financial advice",
@@ -141,11 +148,36 @@ async function callOpenAI({ snapshot, transactions, periodDays }) {
   });
 
   if (!resp.ok) {
-    const txt = await resp.text().catch(() => "");
+    // Never forward upstream error messages to the client; they may contain sensitive info.
+    let code;
+    let type;
+    try {
+      const errJson = await resp.json();
+      code = errJson?.error?.code;
+      type = errJson?.error?.type;
+    } catch {
+      // ignore
+    }
+    console.error("OpenAI request failed", {
+      status: resp.status,
+      code,
+      type,
+      model,
+    });
+
+    if (resp.status === 401) {
+      return {
+        ok: false,
+        status: 401,
+        error:
+          "OpenAI rejected your API key (401). Update OPENAI_API_KEY in .env.local with a valid key (often requires rotating it), then restart the dev server.",
+      };
+    }
+
     return {
       ok: false,
       status: resp.status,
-      error: txt || "AI request failed",
+      error: `OpenAI request failed (${resp.status})${code ? `: ${code}` : ""}`,
     };
   }
 
@@ -203,4 +235,25 @@ export async function POST(req) {
       { status: 400 },
     );
   }
+}
+
+export async function GET() {
+  // Dev-only helper to verify env loading without leaking secrets.
+  if (process.env.NODE_ENV === "production") {
+    return new Response(null, { status: 404 });
+  }
+
+  const apiKey = getOpenAIApiKey();
+  return Response.json(
+    {
+      ok: true,
+      hasKey: Boolean(apiKey),
+      startsWithSk: apiKey ? apiKey.startsWith("sk-") : false,
+      length: apiKey ? apiKey.length : 0,
+      last4: apiKey ? apiKey.slice(-4) : null,
+      nodeEnv: process.env.NODE_ENV,
+      model: process.env.OPENAI_MODEL || "gpt-4o-mini",
+    },
+    { status: 200 },
+  );
 }

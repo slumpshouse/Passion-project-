@@ -9,10 +9,10 @@ export default function ReflectionPage() {
     understandProblem: "",
     identifyPlanSolution: "",
     implementSolution: "",
-    whatWentWell: "",
-    whatDidntGoWell: "",
-    whatChangedDuringProject: "",
-    whatToBuildNext: ""
+    whatWentWell: `I was able to connect and sync the database with my frontend efficiently. It didn’t take as much time as I expected, which allowed me to focus on other parts of the project.`,
+    whatDidntGoWell: `The CSS was challenging, especially when I was trying to add a fade effect to the background of the transaction form. The bottom part of the form didn’t fade along with the rest, which made the layout look inconsistent. Since Copilot wasn’t responding to my instructions correctly at the time, I ended up removing the styling entirely and starting over.`,
+    whatChangedDuringProject: `I changed the project name from Budget Tracker to BudgetWise. The original name felt too plain, and although BudgetWise is similar, it sounds more unique to me.`,
+    whatToBuildNext: `If I had more time, I would add a recurring transactions feature with automatic savings. This would allow money to be saved automatically instead of requiring manual transfers. I would also include recurring payments for subscriptions and bills, such as phone bills, to make budgeting more seamless.`
   });
 
   // Make reflection view read-only by default
@@ -105,7 +105,7 @@ export default function ReflectionPage() {
           <div className="flex h-16 items-center justify-between">
             <div className="flex items-center gap-4">
               <Link href="/dashboard" className="text-2xl font-bold text-foreground">
-                Budget Tracker
+                BudgetWise
               </Link>
               <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
                 Admin
@@ -135,6 +135,12 @@ export default function ReflectionPage() {
             <p className="text-foreground/60">
               Reflect on the development process and plan for future improvements.
             </p>
+            <div className="mt-4">
+              <h3 className="text-sm font-medium text-foreground/70">Identified & Planned Solution</h3>
+              <p className="text-sm text-foreground/60">
+                See the project plan and roadmap: <Link href="/why-us" className="text-blue-600 hover:underline">Project Plan (Why Us)</Link>
+              </p>
+            </div>
           </div>
 
           {/* Reflection Sections */}
@@ -142,46 +148,22 @@ export default function ReflectionPage() {
             {/* Required Reflection Sections */}
             <section className="bg-background border border-foreground/10 rounded-2xl p-6 shadow-sm">
               <h2 className="text-xl font-semibold text-foreground mb-4">What went well</h2>
-              <textarea
-                value={reflectionData.whatWentWell}
-                onChange={editable ? (e) => handleInputChange('whatWentWell', e.target.value) : undefined}
-                readOnly={!editable}
-                placeholder="What went well"
-                className="w-full h-28 p-4 border border-foreground/15 rounded-lg bg-background text-foreground placeholder:text-foreground/50 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
+              <div className="w-full text-foreground whitespace-pre-wrap">{reflectionData.whatWentWell}</div>
             </section>
 
             <section className="bg-background border border-foreground/10 rounded-2xl p-6 shadow-sm">
               <h2 className="text-xl font-semibold text-foreground mb-4">What didn’t go well</h2>
-              <textarea
-                value={reflectionData.whatDidntGoWell}
-                onChange={editable ? (e) => handleInputChange('whatDidntGoWell', e.target.value) : undefined}
-                readOnly={!editable}
-                placeholder="What didn’t go well"
-                className="w-full h-28 p-4 border border-foreground/15 rounded-lg bg-background text-foreground placeholder:text-foreground/50 resize-none focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
-              />
+              <div className="w-full text-foreground whitespace-pre-wrap">{reflectionData.whatDidntGoWell}</div>
             </section>
 
             <section className="bg-background border border-foreground/10 rounded-2xl p-6 shadow-sm">
               <h2 className="text-xl font-semibold text-foreground mb-4">What you changed during the project and why</h2>
-              <textarea
-                value={reflectionData.whatChangedDuringProject}
-                onChange={editable ? (e) => handleInputChange('whatChangedDuringProject', e.target.value) : undefined}
-                readOnly={!editable}
-                placeholder="What you changed during the project and why"
-                className="w-full h-28 p-4 border border-foreground/15 rounded-lg bg-background text-foreground placeholder:text-foreground/50 resize-none focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-              />
+              <div className="w-full text-foreground whitespace-pre-wrap">{reflectionData.whatChangedDuringProject}</div>
             </section>
 
             <section className="bg-background border border-foreground/10 rounded-2xl p-6 shadow-sm">
               <h2 className="text-xl font-semibold text-foreground mb-4">What you'd build next if you had more time</h2>
-              <textarea
-                value={reflectionData.whatToBuildNext}
-                onChange={editable ? (e) => handleInputChange('whatToBuildNext', e.target.value) : undefined}
-                readOnly={!editable}
-                placeholder="What you'd build next if you had more time"
-                className="w-full h-28 p-4 border border-foreground/15 rounded-lg bg-background text-foreground placeholder:text-foreground/50 resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-              />
+              <div className="w-full text-foreground whitespace-pre-wrap">{reflectionData.whatToBuildNext}</div>
             </section>
           </div>
 

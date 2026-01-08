@@ -1,6 +1,6 @@
 export const metadata = {
-  title: "About · Budget Tracker",
-  description: "Why budgeting is hard, and how Budget Tracker helps.",
+  title: "About · BudgetWise",
+  description: "Why budgeting is hard, and how BudgetWise helps.",
 };
 
 export default function AboutPage() {
@@ -142,9 +142,9 @@ export default function AboutPage() {
 
   return (
     <div>
-      <section className="bg-rose-50">
+      <section className="bg-background">
         <div className="mx-auto w-full max-w-6xl px-6 py-16">
-          <h2 className="text-center text-xl font-semibold tracking-tight sm:text-2xl text-black">
+          <h2 className="text-center text-xl font-semibold tracking-tight sm:text-2xl">
             What&apos;s the Problem?
           </h2>
 
@@ -157,15 +157,15 @@ export default function AboutPage() {
 
           <ul className="mx-auto mt-6 max-w-3xl space-y-3 text-sm text-foreground/70">
             <li className="flex items-start gap-3">
-              <span className="mt-1 h-2 w-2 rounded-full bg-rose-400" aria-hidden="true" />
+              <span className="mt-1 h-2 w-2 rounded-full bg-foreground/40" aria-hidden="true" />
               <span>See where money actually goes each week</span>
             </li>
             <li className="flex items-start gap-3">
-              <span className="mt-1 h-2 w-2 rounded-full bg-rose-400" aria-hidden="true" />
+              <span className="mt-1 h-2 w-2 rounded-full bg-foreground/40" aria-hidden="true" />
               <span>Build a realistic budget and stick to it</span>
             </li>
             <li className="flex items-start gap-3">
-              <span className="mt-1 h-2 w-2 rounded-full bg-rose-400" aria-hidden="true" />
+              <span className="mt-1 h-2 w-2 rounded-full bg-foreground/40" aria-hidden="true" />
               <span>Save consistently for goals and unexpected costs</span>
             </li>
           </ul>
@@ -306,20 +306,20 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="bg-rose-50">
+      <section className="bg-background">
         <div className="mx-auto w-full max-w-6xl px-6 py-16">
           <h2 className="text-center text-xl font-semibold tracking-tight sm:text-2xl">
             What Happens If Not Solved?
           </h2>
 
-          <div className="mt-10 rounded-3xl border border-rose-200 bg-rose-50 p-6 sm:p-10">
+          <div className="mt-10 rounded-3xl border border-foreground/10 bg-background p-6 shadow-sm sm:p-10">
             <div className="grid gap-10 sm:grid-cols-2">
               <div>
                 <h3 className="text-base font-semibold tracking-tight">Short-Term Consequences</h3>
                 <ul className="mt-5 space-y-3 text-sm text-foreground/80">
                   {consequences.shortTerm.map((item) => (
                     <li key={item} className="flex items-start gap-3">
-                      <span className="mt-0.5 text-rose-600" aria-hidden="true">
+                      <span className="mt-0.5 text-foreground/60" aria-hidden="true">
                         →
                       </span>
                       <span>{item}</span>
@@ -333,7 +333,7 @@ export default function AboutPage() {
                 <ul className="mt-5 space-y-3 text-sm text-foreground/80">
                   {consequences.longTerm.map((item) => (
                     <li key={item} className="flex items-start gap-3">
-                      <span className="mt-0.5 text-rose-600" aria-hidden="true">
+                      <span className="mt-0.5 text-foreground/60" aria-hidden="true">
                         →
                       </span>
                       <span>{item}</span>
@@ -343,9 +343,9 @@ export default function AboutPage() {
               </div>
             </div>
 
-            <div className="mt-10 rounded-2xl border border-rose-200 bg-rose-50 p-6">
+            <div className="mt-10 rounded-2xl border border-foreground/10 bg-foreground/5 p-6">
               <p className="text-sm leading-6 text-foreground/80">
-                <span className="font-semibold text-rose-700">The Bottom Line:</span> {consequences.bottomLine}
+                <span className="font-semibold text-foreground">The Bottom Line:</span> {consequences.bottomLine}
               </p>
             </div>
           </div>
@@ -431,7 +431,7 @@ export default function AboutPage() {
           </div>
 
           <footer className="mt-12 border-t border-foreground/10 py-8 text-center text-sm text-foreground/60">
-            © {new Date().getFullYear()} Budget Tracker. All rights reserved.
+            © {new Date().getFullYear()} BudgetWise. All rights reserved.
           </footer>
         </div>
       </section>

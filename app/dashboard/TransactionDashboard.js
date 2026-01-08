@@ -278,9 +278,9 @@ export default function TransactionDashboard() {
 
       {/* Paycheck Form Modal */}
       {showPaycheckForm && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-background rounded-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6">
+        <div className="fixed inset-0 w-full h-full bg-black/70 backdrop-blur-md flex items-center justify-center p-4 z-[2147483647] overflow-hidden">
+          <div className="relative bg-background rounded-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6 pb-12">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-lg font-semibold">{editingPaycheck ? 'Edit Paycheck' : 'Add Paycheck'}</h2>
                 <button
@@ -302,15 +302,16 @@ export default function TransactionDashboard() {
                 }}
               />
             </div>
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-12 bg-gradient-to-b from-transparent to-black" />
           </div>
         </div>
       )}
 
       {/* Transaction Form Modal */}
       {showTransactionForm && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-background rounded-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6">
+        <div className="fixed inset-0 w-full h-full bg-black/70 backdrop-blur-md flex items-center justify-center p-4 z-[2147483647] overflow-hidden">
+          <div className="relative bg-background rounded-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6 pb-12">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-lg font-semibold">
                   {editingTransaction ? "Edit Transaction" : "Add Transaction"}
@@ -335,6 +336,7 @@ export default function TransactionDashboard() {
                 }}
               />
             </div>
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-12 bg-gradient-to-b from-transparent to-black" />
           </div>
         </div>
       )}
@@ -405,7 +407,7 @@ export default function TransactionDashboard() {
             </div>
 
             {/* Goals Panel */}
-            <GoalsPanelClient />
+            <GoalsPanelClient userId={currentUser?.id} />
           </div>
 
           {/* Recent Paychecks */}

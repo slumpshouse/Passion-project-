@@ -1,6 +1,6 @@
 export const metadata = {
-  title: "Why Us · Budget Tracker",
-  description: "Why Budget Tracker works and how we plan to deliver it.",
+  title: "Why Us · BudgetWise",
+  description: "Why BudgetWise works and how we plan to deliver it.",
 };
 
 function Pill({ children, tone = "blue" }) {
@@ -27,14 +27,14 @@ function StrategyItem({ title, desc, tone = "blue" }) {
   };
 
   return (
-    <div className="rounded-2xl border border-foreground/10 bg-background p-5">
+    <div className="rounded-2xl border border-foreground/10 bg-white p-5">
       <div className="flex items-start gap-3">
         <span className={`mt-0.5 ${toneStyles[tone]}`} aria-hidden="true">
           ✓
         </span>
         <div>
-          <div className="text-sm font-semibold tracking-tight">{title}</div>
-          <div className="mt-1 text-sm leading-6 text-foreground/70">{desc}</div>
+          <div className="text-sm font-semibold tracking-tight text-black">{title}</div>
+          <div className="mt-1 text-sm leading-6 text-black">{desc}</div>
         </div>
       </div>
     </div>
@@ -43,19 +43,19 @@ function StrategyItem({ title, desc, tone = "blue" }) {
 
 function ChallengeCard({ iconBg, iconColor, title, subtitle, children }) {
   return (
-    <div className="rounded-3xl border border-foreground/10 bg-background p-6 shadow-sm sm:p-10">
+    <div className="rounded-3xl border border-foreground/10 bg-white p-6 shadow-sm sm:p-10">
       <div className="flex items-start gap-4">
         <div className={`flex h-12 w-12 items-center justify-center rounded-2xl ${iconBg} ${iconColor}`} aria-hidden="true">
           <div className="h-5 w-5 rounded-full bg-current/20" />
         </div>
         <div>
-          <h3 className="text-base font-semibold tracking-tight">{title}</h3>
-          <p className="mt-1 text-sm text-foreground/70">{subtitle}</p>
+          <h3 className="text-base font-semibold tracking-tight text-black">{title}</h3>
+          <p className="mt-1 text-sm text-black">{subtitle}</p>
         </div>
       </div>
 
       <div className="mt-8">
-        <div className="text-sm font-semibold">Our Strategies:</div>
+        <div className="text-sm font-semibold text-black">Our Strategies:</div>
         <div className="mt-5 grid gap-4 sm:grid-cols-2">{children}</div>
       </div>
     </div>
@@ -64,24 +64,24 @@ function ChallengeCard({ iconBg, iconColor, title, subtitle, children }) {
 
 function SprintCard({ iconBg, iconColor, sprint, weeks, title, tasks, tone = "blue" }) {
   return (
-    <div className="rounded-3xl border border-foreground/10 bg-background p-6 shadow-sm sm:p-10">
+    <div className="rounded-3xl border border-foreground/10 bg-white p-6 shadow-sm sm:p-10">
       <div className="flex items-start gap-4">
         <div className={`flex h-12 w-12 items-center justify-center rounded-2xl ${iconBg} ${iconColor}`} aria-hidden="true">
           <div className="h-5 w-5 rounded-full bg-current/20" />
         </div>
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-3">
-            <div className="text-sm font-semibold tracking-tight">{sprint}</div>
+            <div className="text-sm font-semibold tracking-tight text-black">{sprint}</div>
             <Pill tone={tone}>{weeks}</Pill>
           </div>
-          <div className="mt-2 text-sm text-foreground/70">{title}</div>
+          <div className="mt-2 text-sm text-black">{title}</div>
         </div>
       </div>
 
-      <div className="mt-7 text-sm font-semibold">Key Tasks:</div>
+      <div className="mt-7 text-sm font-semibold text-black">Key Tasks:</div>
       <ul className="mt-4 grid gap-3 sm:grid-cols-2">
         {tasks.map((t) => (
-          <li key={t} className="flex items-start gap-3 rounded-2xl bg-foreground/5 px-4 py-3 text-sm text-foreground/80">
+          <li key={t} className="flex items-start gap-3 rounded-2xl bg-white border border-foreground/10 px-4 py-3 text-sm text-black">
             <span className="mt-0.5 text-emerald-600" aria-hidden="true">
               ✓
             </span>
@@ -95,33 +95,33 @@ function SprintCard({ iconBg, iconColor, sprint, weeks, title, tasks, tone = "bl
 
 function InfoCard({ iconBg, iconColor, title, desc }) {
   return (
-    <div className="rounded-2xl border border-foreground/10 bg-background p-6 shadow-sm">
+    <div className="rounded-2xl border border-foreground/10 bg-white p-6 shadow-sm">
       <div className={`flex h-12 w-12 items-center justify-center rounded-2xl ${iconBg} ${iconColor}`} aria-hidden="true">
         <div className="h-5 w-5 rounded-full bg-current/20" />
       </div>
-      <div className="mt-4 text-base font-semibold tracking-tight">{title}</div>
-      <div className="mt-2 text-sm leading-6 text-foreground/70">{desc}</div>
+      <div className="mt-4 text-base font-semibold tracking-tight text-black">{title}</div>
+      <div className="mt-2 text-sm leading-6 text-black">{desc}</div>
     </div>
   );
 }
 
 function CapabilityCard({ iconBg, iconColor, title, desc, bullets = [] }) {
   return (
-    <div className="rounded-3xl border border-foreground/10 bg-background p-6 shadow-sm sm:p-8">
+    <div className="rounded-3xl border border-foreground/10 bg-white p-6 shadow-sm sm:p-8">
       <div className={`flex h-12 w-12 items-center justify-center rounded-2xl ${iconBg} ${iconColor}`} aria-hidden="true">
         <div className="h-5 w-5 rounded-full bg-current/20" />
       </div>
-      <div className="mt-4 text-base font-semibold tracking-tight">{title}</div>
-      <div className="mt-2 text-sm leading-6 text-foreground/70">{desc}</div>
+      <div className="mt-4 text-base font-semibold tracking-tight text-black">{title}</div>
+      <div className="mt-2 text-sm leading-6 text-black">{desc}</div>
 
       {bullets.length > 0 ? (
-        <ul className="mt-5 space-y-3 text-sm text-foreground/70">
+        <ul className="mt-5 space-y-3 text-sm text-black">
           {bullets.map((b) => (
             <li key={b} className="flex items-start gap-3">
               <span className="mt-0.5 text-emerald-600" aria-hidden="true">
                 ✓
               </span>
-              <span>{b}</span>
+              <span className="text-black">{b}</span>
             </li>
           ))}
         </ul>
@@ -132,8 +132,8 @@ function CapabilityCard({ iconBg, iconColor, title, desc, bullets = [] }) {
 
 export default function WhyUsPage() {
   return (
-    <main className="w-full pb-16">
-      <section className="bg-slate-50 py-14 sm:py-20">
+    <main className="w-full pb-16 bg-black">
+      <section className="bg-black py-14 sm:py-20">
         <div className="mx-auto w-full max-w-6xl px-6">
           <div className="mx-auto max-w-3xl text-center">
             <div className="flex justify-center">
@@ -143,10 +143,10 @@ export default function WhyUsPage() {
               </span>
             </div>
 
-            <h1 className="mt-6 text-balance text-2xl font-semibold tracking-tight sm:text-3xl">
+            <h1 className="mt-6 text-balance text-2xl font-semibold tracking-tight text-white sm:text-3xl">
               BudgetWise: Your Path to Financial Clarity
             </h1>
-            <p className="mx-auto mt-3 max-w-2xl text-pretty text-sm leading-7 text-foreground/70 sm:text-base">
+            <p className="mx-auto mt-3 max-w-2xl text-pretty text-sm leading-7 text-white/70 sm:text-base">
               We&apos;re building a simple, intuitive budgeting tool that gives you complete visibility and control over your
               finances—without the complexity or cost of traditional solutions.
             </p>
@@ -154,15 +154,15 @@ export default function WhyUsPage() {
         </div>
       </section>
 
-      <section className="bg-background py-16">
+      <section className="bg-black py-16">
         <div className="mx-auto w-full max-w-6xl px-6">
           <div className="text-center">
-            <div className="text-sm font-semibold tracking-tight text-foreground/80">Our Solution</div>
+            <div className="text-sm font-semibold tracking-tight text-white/80">Our Solution</div>
           </div>
 
-          <div className="mx-auto mt-8 max-w-5xl rounded-3xl border border-blue-200 bg-blue-50/40 p-6 sm:p-10">
+          <div className="mx-auto mt-8 max-w-5xl rounded-3xl border border-foreground/20 bg-white p-6 sm:p-10 shadow-sm">
             <div className="mx-auto max-w-3xl">
-              <p className="text-pretty text-lg font-medium leading-8 tracking-tight sm:text-xl">
+              <p className="text-pretty text-lg font-medium leading-8 tracking-tight text-black sm:text-xl">
                 BudgetWise is a free, user-friendly web application that helps you track every dollar, understand your
                 spending patterns, and achieve your financial goals.
               </p>
@@ -185,28 +185,24 @@ export default function WhyUsPage() {
                 iconBg="bg-amber-50"
                 iconColor="text-amber-600"
                 title="Free"
-                desc="Personal budgeting shouldn&apos;t cost you money."
+                desc="Personal budgeting shouldn\'t cost you money."
               />
             </div>
 
-            <div className="mt-8 rounded-2xl bg-background p-6 sm:p-7">
-              <div className="flex gap-4">
-                <div className="w-1 rounded-full bg-blue-600" aria-hidden="true" />
-                <div className="text-sm leading-7 text-foreground/70">
-                  <span className="font-semibold text-blue-700">Our Approach:</span> Instead of overwhelming users with
-                  complex features, we focus on the essentials—tracking transactions, visualizing spending, and setting
-                  achievable goals. Everything is automated where possible, making budgeting effortless and sustainable.
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </section>
 
-      <section className="bg-background pb-16">
+      
+
+      
+
+      
+
+      <section className="bg-black pb-16">
         <div className="mx-auto w-full max-w-6xl px-6">
           <div className="text-center">
-            <div className="text-sm font-semibold tracking-tight text-foreground/80">What BudgetWise Will Do</div>
+            <div className="text-sm font-semibold tracking-tight text-white/80">What BudgetWise Will Do</div>
           </div>
 
           <div className="mt-10 grid gap-6 lg:grid-cols-3">
@@ -255,11 +251,11 @@ export default function WhyUsPage() {
         </div>
       </section>
 
-      <section className="bg-blue-50 py-14 sm:py-20">
+      <section className="bg-black py-14 sm:py-20">
         <div className="mx-auto w-full max-w-6xl px-6">
           <div className="mx-auto max-w-2xl text-center">
-            <h1 className="text-balance text-2xl font-semibold tracking-tight sm:text-3xl">Challenges We Expect</h1>
-            <p className="mx-auto mt-3 max-w-xl text-pretty text-sm leading-7 text-foreground/70 sm:text-base">
+            <h1 className="text-balance text-2xl font-semibold tracking-tight text-white sm:text-3xl">Challenges We Expect</h1>
+            <p className="mx-auto mt-3 max-w-xl text-pretty text-sm leading-7 text-white/70 sm:text-base">
               We&apos;re realistic about the obstacles ahead. Here&apos;s what we anticipate and how we plan to address them.
             </p>
           </div>
@@ -380,11 +376,11 @@ export default function WhyUsPage() {
         </div>
       </section>
 
-      <section className="bg-blue-50 py-16">
+      <section className="bg-black py-16">
         <div className="mx-auto w-full max-w-6xl px-6">
           <div className="mx-auto max-w-2xl text-center">
-            <h2 className="text-balance text-xl font-semibold tracking-tight sm:text-2xl">Project Plan Summary</h2>
-            <p className="mx-auto mt-3 max-w-xl text-pretty text-sm leading-7 text-foreground/70 sm:text-base">
+            <h2 className="text-balance text-xl font-semibold tracking-tight text-white sm:text-2xl">Project Plan Summary</h2>
+            <p className="mx-auto mt-3 max-w-xl text-pretty text-sm leading-7 text-white/70 sm:text-base">
               A 6-week development roadmap broken into three focused sprints
             </p>
           </div>
@@ -441,41 +437,13 @@ export default function WhyUsPage() {
               ]}
             />
 
-            <div className="rounded-3xl border border-blue-200 bg-background p-6 shadow-sm sm:p-10">
-              <div className="flex items-start gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-blue-600" aria-hidden="true">
-                  <div className="h-5 w-5 rounded-full bg-current/20" />
-                </div>
-                <div>
-                  <h3 className="text-base font-semibold tracking-tight">Post-Launch Roadmap</h3>
-                  <p className="mt-1 text-sm text-foreground/70">
-                    After the initial 6-week launch, we&apos;ll iterate based on user feedback with monthly releases:
-                  </p>
-                </div>
-              </div>
-
-              <ul className="mt-6 space-y-3 text-sm text-foreground/70">
-                {[
-                  "Recurring transaction templates",
-                  "Bank account integration (Plaid API)",
-                  "Mobile app versions (iOS & Android)",
-                  "AI-powered spending insights and recommendations",
-                ].map((item) => (
-                  <li key={item} className="flex items-start gap-3">
-                    <span className="mt-0.5 text-blue-600" aria-hidden="true">
-                      →
-                    </span>
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            {/* Post-Launch Roadmap removed */}
           </div>
         </div>
       </section>
 
-      <footer className="mx-auto w-full max-w-6xl border-t border-foreground/10 px-6 py-8 text-center text-sm text-foreground/60">
-        © {new Date().getFullYear()} Budget Tracker. All rights reserved.
+      <footer className="mx-auto w-full max-w-6xl border-t border-white/10 px-6 py-8 text-center text-sm text-white/60">
+        © {new Date().getFullYear()} BudgetWise. All rights reserved.
       </footer>
     </main>
   );

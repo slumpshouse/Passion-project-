@@ -87,14 +87,8 @@ export default function LoginPage() {
         // Store user info in localStorage for session management
         localStorage.setItem('currentUser', JSON.stringify(data.user));
         
-        // Clear any existing data for a fresh start
-        localStorage.removeItem('user_transactions');
-        localStorage.removeItem('user_paychecks');
-        localStorage.removeItem('user_goals');
-        localStorage.removeItem('savings_goals');
-        // Also clear the user_savings_goals key used by the client goals panel
-        localStorage.removeItem('user_savings_goals');
-        localStorage.removeItem('budgetTracker_transactions');
+        // Note: We do NOT clear transactions/goals on login.
+        // Data persists until explicitly deleted by the user.
         
         // Dispatch custom event to update header
         window.dispatchEvent(new Event('userLogin'));
@@ -157,7 +151,7 @@ export default function LoginPage() {
                 <path d="M9 15h4" />
               </svg>
             </span>
-            <span className="text-lg font-semibold tracking-tight">Budget Tracker</span>
+            <span className="text-lg font-semibold tracking-tight">BudgetWise</span>
           </Link>
           
           <h1 className="text-2xl font-semibold tracking-tight">

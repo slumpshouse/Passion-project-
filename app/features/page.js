@@ -1,6 +1,6 @@
 export const metadata = {
-  title: "Features · Budget Tracker",
-  description: "See what you can do with Budget Tracker.",
+  title: "Features · BudgetWise",
+  description: "See what you can do with BudgetWise.",
 };
 
 function CheckItem({ children, color = "text-emerald-600" }) {
@@ -16,14 +16,16 @@ function CheckItem({ children, color = "text-emerald-600" }) {
 
 function ExampleBox({ tone = "green", children }) {
   const toneStyles = {
-    green: "border-emerald-500 bg-emerald-50",
-    orange: "border-amber-500 bg-amber-50",
-    blue: "border-blue-500 bg-blue-50",
-    purple: "border-violet-500 bg-violet-50",
+    green: "border-l-emerald-500",
+    orange: "border-l-amber-500",
+    blue: "border-l-blue-500",
+    purple: "border-l-violet-500",
   };
 
   return (
-    <div className={`mt-6 rounded-xl border-l-4 ${toneStyles[tone]} p-4 text-sm`}>
+    <div
+      className={`mt-6 rounded-xl border border-foreground/10 bg-background p-4 text-sm text-foreground/80 border-l-4 ${toneStyles[tone]}`}
+    >
       {children}
     </div>
   );
@@ -107,7 +109,7 @@ export default function FeaturesPage() {
 
       <section className="mt-8 py-8">
         <div className="mx-auto max-w-2xl text-center">
-          <h2 className="text-balance text-xl font-semibold tracking-tight sm:text-2xl">Why Choose Budget Tracker</h2>
+          <h2 className="text-balance text-xl font-semibold tracking-tight sm:text-2xl">Why Choose BudgetWise</h2>
           <p className="mx-auto mt-3 max-w-xl text-pretty text-sm leading-6 text-foreground/70 sm:text-base">
             Clear differentiators that explain why users should pick this solution over alternatives.
           </p>
@@ -134,8 +136,8 @@ export default function FeaturesPage() {
       <section className="mt-10 rounded-3xl bg-blue-50 px-6 py-14 sm:px-10">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="text-balance text-xl font-semibold tracking-tight sm:text-2xl">How You Interact</h2>
-          <p className="mx-auto mt-3 max-w-xl text-pretty text-sm leading-6 text-foreground/70 sm:text-base">
-            Four primary ways you&apos;ll use Budget Tracker in your daily financial routine
+            <p className="mx-auto mt-3 max-w-xl text-pretty text-sm leading-6 text-foreground/70 sm:text-base">
+            Four primary ways you&apos;ll use BudgetWise in your daily financial routine
           </p>
         </div>
 
@@ -386,7 +388,7 @@ export default function FeaturesPage() {
               n: 1,
               title: "Sign Up & Onboard",
               time: "5 minutes",
-              bg: "bg-blue-50 border-blue-200",
+              bg: "bg-background border-foreground/10 border-t-4 border-t-blue-500",
               accent: "bg-blue-600",
               bullets: ["Create account", "Set financial goals", "Customize categories", "Complete tutorial"],
               tag: "✓ Ready to track",
@@ -395,7 +397,7 @@ export default function FeaturesPage() {
               n: 2,
               title: "Daily Transaction Entry",
               time: "2-5 min/day",
-              bg: "bg-violet-50 border-violet-200",
+              bg: "bg-background border-foreground/10 border-t-4 border-t-violet-500",
               accent: "bg-violet-600",
               bullets: [
                 "Log purchases as they happen",
@@ -409,7 +411,7 @@ export default function FeaturesPage() {
               n: 3,
               title: "Weekly Review",
               time: "10 min/week",
-              bg: "bg-emerald-50 border-emerald-200",
+              bg: "bg-background border-foreground/10 border-t-4 border-t-emerald-500",
               accent: "bg-emerald-600",
               bullets: ["Check spending charts", "Compare to budget", "Adjust for next week", "Update goal progress"],
               tag: "✓ Stay on track",
@@ -418,7 +420,7 @@ export default function FeaturesPage() {
               n: 4,
               title: "Monthly Analysis",
               time: "20 min/month",
-              bg: "bg-amber-50 border-amber-200",
+              bg: "bg-background border-foreground/10 border-t-4 border-t-amber-500",
               accent: "bg-amber-600",
               bullets: ["Review full month trends", "Export reports", "Adjust budgets/goals", "Plan for next month"],
               tag: "✓ Continuous improvement",
@@ -446,7 +448,7 @@ export default function FeaturesPage() {
                 ))}
               </ul>
 
-              <div className="mt-7 rounded-2xl bg-white/60 px-4 py-3 text-center text-sm font-medium text-foreground/80">
+              <div className="mt-7 rounded-2xl border border-foreground/10 bg-background px-4 py-3 text-center text-sm font-medium text-foreground/80">
                 {step.tag}
               </div>
             </div>
@@ -459,7 +461,7 @@ export default function FeaturesPage() {
           <div className="rounded-full border border-foreground/10 bg-background px-4 py-2">Building better financial habits</div>
         </div>
 
-        <div className="mt-10 rounded-3xl border border-emerald-200 bg-emerald-50 p-6 sm:p-10">
+        <div className="mt-10 rounded-3xl border border-foreground/10 bg-background p-6 sm:p-10">
           <div className="text-center text-base font-semibold tracking-tight">Long-Term Impact</div>
           <div className="mt-8 grid gap-6 sm:grid-cols-3">
             {[
@@ -467,7 +469,7 @@ export default function FeaturesPage() {
               { title: "Month 3", desc: "Hitting first savings goals" },
               { title: "Month 6", desc: "Complete financial control" },
             ].map((card) => (
-              <div key={card.title} className="rounded-2xl bg-white/70 p-6 text-center shadow-sm">
+              <div key={card.title} className="rounded-2xl border border-foreground/10 bg-background p-6 text-center shadow-sm">
                 <div className="text-sm font-semibold">{card.title}</div>
                 <div className="mt-2 text-sm text-foreground/70">{card.desc}</div>
               </div>
@@ -477,7 +479,7 @@ export default function FeaturesPage() {
       </section>
 
       <footer className="mt-6 border-t border-foreground/10 py-8 text-center text-sm text-foreground/60">
-        © {new Date().getFullYear()} Budget Tracker. All rights reserved.
+        © {new Date().getFullYear()} BudgetWise. All rights reserved.
       </footer>
     </main>
   );

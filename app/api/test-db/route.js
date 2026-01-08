@@ -1,37 +1,32 @@
 import { NextResponse } from 'next/server';
+import { prisma } from '../../lib/prisma';
 
 export async function GET() {
-  try {
-    // Import Prisma client
-    const { PrismaClient } = await import('@prisma/client');
-    
-    const prisma = new PrismaClient({
-      datasources: {
-        db: {
-          url: 'postgresql://neondb_owner:npg_s61xXEDavnBJ@ep-snowy-field-ah765zfm-pooler.c-3.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require',
-        },
-      },
-    });
+  // Dev-only helper route.
+  if (process.env.NODE_ENV === 'production') {
+    return new Response(null, { status: 404 });
+  }
 
-    // Test the connection
+  try {
     await prisma.$connect();
-    
-    // Try a simple query
     const result = await prisma.$queryRaw`SELECT 1 as test`;
-    
     await prisma.$disconnect();
 
-    return NextResponse.json({ 
+    return NextResponse.json({
       success: true,
       message: 'Database connection successful',
-      testQuery: result
+      testQuery: result,
+      hasDatabaseUrl: Boolean(process.env.DATABASE_URL),
     });
   } catch (error) {
     console.error('Database connection error:', error);
-    return NextResponse.json({ 
-      success: false, 
-      error: error.message,
-      details: error.stack
-    }, { status: 500 });
+    return NextResponse.json(
+      {
+        success: false,
+        error: error?.message || 'Database connection failed',
+        hasDatabaseUrl: Boolean(process.env.DATABASE_URL),
+      },
+      { status: 500 },
+    );
   }
 }

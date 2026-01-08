@@ -13,20 +13,42 @@ export default function useDatabaseTransactions() {
     if (user) {
       const parsedUser = JSON.parse(user);
       setCurrentUser(parsedUser);
-      // Start with empty transactions for a fresh account
-      const savedTransactions = JSON.parse(localStorage.getItem('user_transactions') || '[]');
-      setTransactions(savedTransactions);
+
+      // Refresh from DB for logged-in users.
+      if (parsedUser?.id) {
+        loadTransactions(parsedUser.id);
+      }
+    }
+
+    // Load from localStorage immediately for fast UI, then refresh from DB.
+    if (user) {
+      const parsedUser = JSON.parse(user);
+      const STORAGE_KEY = `budgetWise_transactions_${parsedUser.id}`;
+      try {
+        const savedTransactions = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+        setTransactions(Array.isArray(savedTransactions) ? savedTransactions : []);
+      } catch {
+        setTransactions([]);
+      }
     }
   }, []);
 
   const loadTransactions = async (userId) => {
+    const STORAGE_KEY = `budgetWise_transactions_${userId}`;
     setLoading(true);
     try {
-      const response = await fetch(`/api/transactions?userId=${userId}`);
+      const response = await fetch(`/api/transactions?userId=${encodeURIComponent(userId)}`);
       const data = await response.json();
       
       if (data.success) {
-        setTransactions(data.transactions);
+        if (data.fallbackMode) {
+          // DB unavailable; keep localStorage data.
+          return;
+        }
+
+        const next = Array.isArray(data.transactions) ? data.transactions : [];
+        setTransactions(next);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
       }
     } catch (error) {
       console.error('Error loading transactions:', error);
@@ -36,6 +58,7 @@ export default function useDatabaseTransactions() {
   };
 
   const addTransaction = async (transaction) => {
+    const STORAGE_KEY = currentUser?.id ? `budgetWise_transactions_${currentUser.id}` : "budgetWise_transactions";
     // For now, use localStorage as fallback
     try {
       if (currentUser?.id) {
@@ -53,7 +76,11 @@ export default function useDatabaseTransactions() {
         const data = await response.json();
         
         if (data.success) {
-          setTransactions(prev => [data.transaction, ...prev]);
+          setTransactions(prev => {
+            const updated = [data.transaction, ...prev];
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+            return updated;
+          });
           return;
         }
       }
@@ -70,12 +97,13 @@ export default function useDatabaseTransactions() {
     
     setTransactions(prev => {
       const updated = [newTransaction, ...prev];
-      localStorage.setItem('budgetTracker_transactions', JSON.stringify(updated));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
       return updated;
     });
   };
 
   const updateTransaction = async (updatedTransaction) => {
+    const STORAGE_KEY = currentUser?.id ? `budgetWise_transactions_${currentUser.id}` : "budgetWise_transactions";
     try {
       const response = await fetch('/api/transactions', {
         method: 'PUT',
@@ -90,7 +118,7 @@ export default function useDatabaseTransactions() {
       if (data.success) {
         setTransactions(prev => {
           const updated = prev.map(t => t.id === updatedTransaction.id ? data.transaction : t);
-          localStorage.setItem('budgetTracker_transactions', JSON.stringify(updated));
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
           return updated;
         });
         return;
@@ -102,12 +130,13 @@ export default function useDatabaseTransactions() {
     // Fallback to localStorage
     setTransactions(prev => {
       const updated = prev.map(t => t.id === updatedTransaction.id ? updatedTransaction : t);
-      localStorage.setItem('budgetTracker_transactions', JSON.stringify(updated));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
       return updated;
     });
   };
 
   const deleteTransaction = async (transactionId) => {
+    const STORAGE_KEY = currentUser?.id ? `budgetWise_transactions_${currentUser.id}` : "budgetWise_transactions";
     if (confirm('Are you sure you want to delete this transaction?')) {
       try {
         const response = await fetch(`/api/transactions?id=${transactionId}`, {
@@ -119,7 +148,7 @@ export default function useDatabaseTransactions() {
         if (data.success) {
           setTransactions(prev => {
             const filtered = prev.filter(t => t.id !== transactionId);
-            localStorage.setItem('budgetTracker_transactions', JSON.stringify(filtered));
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(filtered));
             return filtered;
           });
           return;
@@ -131,7 +160,7 @@ export default function useDatabaseTransactions() {
       // Fallback to localStorage
       setTransactions(prev => {
         const filtered = prev.filter(t => t.id !== transactionId);
-        localStorage.setItem('budgetTracker_transactions', JSON.stringify(filtered));
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(filtered));
         return filtered;
       });
     }

@@ -1,21 +1,22 @@
 import { PrismaClient } from '@prisma/client'
 
-// Test database connection with explicit connection string
-const DATABASE_URL = 'postgresql://neondb_owner:npg_s61xXEDavnBJ@ep-snowy-field-ah765zfm-pooler.c-3.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require';
+// Optional direct/override connection string for debugging.
+// Prefer setting DATABASE_URL (used by `app/lib/prisma.js`) unless you explicitly need a second connection.
+const DIRECT_DATABASE_URL = process.env.DIRECT_DATABASE_URL;
 
-const globalForPrisma = globalThis as unknown as {
-  prisma: PrismaClient | undefined
-}
+const globalForPrisma = globalThis;
 
 export const prisma =
-  globalForPrisma.prisma ??
+  globalForPrisma.prismaDirect ??
   new PrismaClient({
-    datasources: {
-      db: {
-        url: DATABASE_URL,
-      },
-    },
+    datasources: DIRECT_DATABASE_URL
+      ? {
+          db: {
+            url: DIRECT_DATABASE_URL,
+          },
+        }
+      : undefined,
     log: ['query'],
   })
 
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
+if (process.env.NODE_ENV !== 'production') globalForPrisma.prismaDirect = prisma
