@@ -242,7 +242,7 @@ export default function GoalsPanelClient({ userId }) {
         <button
           type="button"
           onClick={() => setShowForm((v) => !v)}
-          className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-foreground/10 text-foreground/70 hover:text-foreground"
+          className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-foreground/10 text-foreground/70"
           aria-label="Add goal"
         >
           <span aria-hidden="true">+</span>
@@ -271,7 +271,7 @@ export default function GoalsPanelClient({ userId }) {
         )}
 
         {goals.length > 0 && goals.map((g, idx) => (
-          <div key={g.id || `${g.name}-${idx}`} className="group hover:bg-foreground/5 p-3 rounded-lg transition-colors">
+          <div key={g.id || `${g.name}-${idx}`} className="group p-3 rounded-lg transition-colors">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <span className="text-foreground/60" aria-hidden="true">
@@ -288,7 +288,7 @@ export default function GoalsPanelClient({ userId }) {
                 <div className="text-sm text-foreground/70">{g.pct}%</div>
                 <button
                   onClick={() => editGoal(g)}
-                  className="opacity-0 group-hover:opacity-100 transition-opacity h-7 w-7 rounded-md border border-foreground/10 text-foreground/50 hover:text-blue-500 hover:border-blue-200 hover:bg-blue-50 flex items-center justify-center"
+                  className="h-7 w-7 rounded-md border border-foreground/10 text-foreground/50 flex items-center justify-center"
                   aria-label={`Edit ${g.name} goal`}
                   title="Edit goal"
                 >
@@ -298,7 +298,7 @@ export default function GoalsPanelClient({ userId }) {
                 </button>
                 <button
                   onClick={() => deleteGoal(g.id)}
-                  className="opacity-0 group-hover:opacity-100 transition-opacity h-7 w-7 rounded-md border border-foreground/10 text-foreground/50 hover:text-red-500 hover:border-red-200 hover:bg-red-50 flex items-center justify-center"
+                  className="h-7 w-7 rounded-md border border-foreground/10 text-foreground/50 flex items-center justify-center"
                   aria-label={`Delete ${g.name} goal`}
                   title="Delete goal"
                 >
@@ -356,11 +356,11 @@ export default function GoalsPanelClient({ userId }) {
             </div>
           </div>
 
-          <div className="flex gap-3">
+            <div className="flex gap-3">
             <button
               type="button"
               onClick={addGoal}
-              className="mt-4 inline-flex h-11 items-center justify-center rounded-xl bg-blue-600 px-4 text-sm font-medium text-white hover:opacity-95"
+              className="mt-4 inline-flex h-11 items-center justify-center rounded-xl bg-blue-600 px-4 text-sm font-medium text-white"
             >
               {editingGoal ? 'Update Goal' : 'Save Goal'}
             </button>
@@ -371,7 +371,7 @@ export default function GoalsPanelClient({ userId }) {
                 setEditingGoal(null);
                 setForm({ name: "", target: "", current: "" });
               }}
-              className="mt-4 inline-flex h-11 items-center justify-center rounded-xl border border-foreground/10 px-4 text-sm font-medium text-foreground/80 hover:text-foreground"
+              className="mt-4 inline-flex h-11 items-center justify-center rounded-xl border border-foreground/10 px-4 text-sm font-medium text-foreground/80"
             >
               Cancel
             </button>
@@ -383,7 +383,7 @@ export default function GoalsPanelClient({ userId }) {
         <button
           type="button"
           onClick={() => setShowForm(true)}
-          className="mt-7 inline-flex h-11 w-full items-center justify-center rounded-xl bg-blue-600 px-4 text-sm font-medium text-white hover:opacity-95"
+          className="mt-7 inline-flex h-11 w-full items-center justify-center rounded-xl bg-blue-600 px-4 text-sm font-medium text-white"
         >
           Add New Goal
         </button>

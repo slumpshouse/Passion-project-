@@ -25,6 +25,7 @@ export default function AiInsightsClient({ transactions = [] }) {
   const [userId, setUserId] = useState(null);
 
   const tx = useMemo(() => transactions, [transactions]);
+  const MIN_TX_FOR_INSIGHTS = 8;
 
   // Get userId on mount
   useEffect(() => {
@@ -36,6 +37,10 @@ export default function AiInsightsClient({ transactions = [] }) {
   }, []);
 
   async function generate({ automatic = false } = {}) {
+    if (!tx || tx.length < MIN_TX_FOR_INSIGHTS) {
+      if (!automatic) setError(`Add at least ${MIN_TX_FOR_INSIGHTS} transactions to generate AI insights.`);
+      return;
+    }
     const STORAGE_KEY = userId ? `bt_biweekly_insights_${userId}` : "bt_biweekly_insights";
     const STORAGE_AT_KEY = userId ? `bt_biweekly_insights_at_${userId}` : "bt_biweekly_insights_at";
     setLoading(true);
@@ -45,7 +50,7 @@ export default function AiInsightsClient({ transactions = [] }) {
       const resp = await fetch("/api/insights", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ periodDays: 14, transactions: tx }),
+        body: JSON.stringify({ periodDays: 14, transactions: tx, userId }),
       });
 
       const data = await resp.json().catch(() => ({}));
@@ -65,19 +70,26 @@ export default function AiInsightsClient({ transactions = [] }) {
     }
   }
 
+  // Auto-generate when transactions change or on mount if cache is stale.
   useEffect(() => {
-    if (!userId) return;
-    const STORAGE_KEY = `bt_biweekly_insights_${userId}`;
-    const STORAGE_AT_KEY = `bt_biweekly_insights_at_${userId}`;
+    const STORAGE_KEY = userId ? `bt_biweekly_insights_${userId}` : "bt_biweekly_insights";
+    const STORAGE_AT_KEY = userId ? `bt_biweekly_insights_at_${userId}` : "bt_biweekly_insights_at";
     const cached = safeJsonParse(localStorage.getItem(STORAGE_KEY) || "");
     const lastAt = Number(localStorage.getItem(STORAGE_AT_KEY) || "0");
 
     if (cached) setPayload(cached);
 
-    const shouldAuto = !lastAt || nowMs() - lastAt >= daysToMs(14);
-    if (shouldAuto) generate({ automatic: true });
+    const shouldAuto = !lastAt || nowMs() - lastAt >= daysToMs(14) || !cached;
+
+    // Only auto-generate when we have enough transactions to produce useful insights.
+    if (shouldAuto && tx && tx.length >= MIN_TX_FOR_INSIGHTS) {
+      generate({ automatic: true });
+    } else if (!cached && (!tx || tx.length < MIN_TX_FOR_INSIGHTS)) {
+      // Clear any stale payload if we don't meet the minimum data requirement
+      setPayload(null);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userId]);
+  }, [userId, tx]);
 
   const insights = payload?.insights;
 
@@ -100,14 +112,7 @@ export default function AiInsightsClient({ transactions = [] }) {
           <div className="mt-1 text-sm text-foreground/60">Updates every 14 days based on your activity.</div>
         </div>
 
-        <button
-          type="button"
-          onClick={() => generate({ automatic: false })}
-          disabled={loading}
-          className="inline-flex h-10 items-center justify-center rounded-xl bg-blue-600 px-4 text-sm font-medium text-white hover:opacity-95 disabled:opacity-60"
-        >
-          {loading ? "Generating…" : "Generate Now"}
-        </button>
+        {/* Generation is automatic — no manual button required. */}
       </div>
 
       {error ? (
@@ -229,7 +234,15 @@ export default function AiInsightsClient({ transactions = [] }) {
         </div>
       ) : (
         <div className="mt-6 text-sm text-foreground/60">
-          No summary yet. Click <span className="font-medium text-foreground/80">Generate Now</span>.
+          {tx && tx.length === 0 ? (
+            <p>
+              It appears that you haven't recorded any transactions over the past two weeks, which may indicate an opportunity to start tracking your spending habits. Establishing a clear view of your financial situation is crucial for building healthy money habits.
+            </p>
+          ) : (
+            <div>
+              No summary yet. Click <span className="font-medium text-foreground/80">Generate Now</span>.
+            </div>
+          )}
         </div>
       )}
     </section>

@@ -81,25 +81,25 @@ export default function Header() {
         </Link>
 
         <nav className="hidden flex-1 items-center justify-center gap-8 text-sm text-foreground/70 sm:flex">
-          <Link className="hover:text-foreground" href="/">
+          <Link className="text-foreground/70" href="/">
             Home
           </Link>
           {user && (
-            <Link className="hover:text-foreground" href="/dashboard">
+            <Link className="text-foreground/70" href="/dashboard">
               Dashboard
             </Link>
           )}
-          <Link className="hover:text-foreground" href="/about">
+          <Link className="text-foreground/70" href="/about">
             About
           </Link>
-          <Link className="hover:text-foreground" href="/features">
+          <Link className="text-foreground/70" href="/features">
             Features
           </Link>
-          <Link className="hover:text-foreground" href="/why-us">
+          <Link className="text-foreground/70" href="/why-us">
             Why Us
           </Link>
           {user && user.role === 'admin' && (
-            <Link className="hover:text-foreground" href="/reflection">
+            <Link className="text-foreground/70" href="/reflection">
               Reflection
             </Link>
           )}
@@ -113,7 +113,7 @@ export default function Header() {
               </span>
               <button
                 onClick={handleLogout}
-                className="inline-flex h-10 items-center justify-center rounded-full bg-red-600 px-5 text-sm font-medium text-white hover:opacity-95"
+                className="inline-flex h-10 items-center justify-center rounded-full bg-red-600 px-5 text-sm font-medium text-white"
               >
                 Logout
               </button>
@@ -121,7 +121,7 @@ export default function Header() {
           ) : (
             <Link
               href="/login"
-              className="inline-flex h-10 items-center justify-center rounded-full bg-blue-600 px-5 text-sm font-medium text-white hover:opacity-95"
+              className="inline-flex h-10 items-center justify-center rounded-full bg-blue-600 px-5 text-sm font-medium text-white"
             >
               Get Started
             </Link>

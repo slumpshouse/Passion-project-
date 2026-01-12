@@ -120,13 +120,13 @@ export default function Home() {
             <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <Link
                 href="/login"
-                className="inline-flex h-11 w-full items-center justify-center rounded-full bg-blue-600 px-6 text-sm font-medium text-white hover:opacity-95 sm:w-auto"
+                className="inline-flex h-11 w-full items-center justify-center rounded-full bg-blue-600 px-6 text-sm font-medium text-white sm:w-auto"
               >
                 Get Started
               </Link>
               <Link
                 href="#features"
-                className="inline-flex h-11 w-full items-center justify-center rounded-full border border-foreground/15 px-6 text-sm font-medium hover:bg-foreground/5 sm:w-auto"
+                className="inline-flex h-11 w-full items-center justify-center rounded-full border border-foreground/15 px-6 text-sm font-medium sm:w-auto"
               >
                 Learn More
               </Link>

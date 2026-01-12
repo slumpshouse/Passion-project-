@@ -117,9 +117,40 @@ export default function TransactionDashboard() {
       // Update existing paycheck
       setPaychecks(prev => prev.map(p => p.id === editingPaycheck.id ? paycheck : p));
       setEditingPaycheck(null);
+      // Also update matching transaction if exists
+      try {
+        updateTransaction && updateTransaction({
+          id: paycheck.id,
+          amount: parseFloat(paycheck.amount),
+          description: paycheck.description || 'Paycheck',
+          category: 'Paycheck',
+          type: 'income',
+          date: paycheck.date,
+          timestamp: paycheck.timestamp || new Date().toISOString()
+        });
+      } catch (e) {
+        console.warn('Failed updating linked paycheck transaction', e);
+      }
     } else {
-      // Add new paycheck
-      setPaychecks(prev => [paycheck, ...prev]);
+      // Add new paycheck (persist locally and as an income transaction)
+      const newPaycheck = paycheck;
+      setPaychecks(prev => [newPaycheck, ...prev]);
+
+      // Create a matching transaction so paychecks are persisted in the transactions DB/table
+      try {
+        const txn = {
+          id: newPaycheck.id, // use same id so we can link/delete later
+          amount: parseFloat(newPaycheck.amount),
+          description: newPaycheck.description || 'Paycheck',
+          category: 'Paycheck',
+          type: 'income',
+          date: newPaycheck.date,
+          timestamp: newPaycheck.timestamp || new Date().toISOString()
+        };
+        addTransaction && addTransaction(txn);
+      } catch (e) {
+        console.warn('Failed creating linked paycheck transaction', e);
+      }
     }
     setShowPaycheckForm(false);
   };
@@ -131,7 +162,15 @@ export default function TransactionDashboard() {
 
   const deletePaycheck = (paycheckId) => {
     if (confirm('Are you sure you want to delete this paycheck?')) {
+      // Remove from local UI
       setPaychecks(prev => prev.filter(p => p.id !== paycheckId));
+
+      // Also remove matching transaction if present
+      try {
+        deleteTransaction && deleteTransaction(paycheckId);
+      } catch (e) {
+        console.warn('Failed deleting linked paycheck transaction', e);
+      }
     }
   };
 
@@ -228,48 +267,33 @@ export default function TransactionDashboard() {
         
         <div className="flex gap-3">
           {currentUser?.role === 'admin' && (
-            <Link
-              href="/rubric-evidence"
-              className="px-4 py-2 rounded-lg text-sm font-medium bg-emerald-600 text-white hover:opacity-95"
-            >
+            <Link href="/rubric-evidence" className="inline-flex h-10 items-center justify-center rounded-full px-5 text-sm font-semibold bg-blue-600 text-white transition transform hover:scale-105 hover:shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-200">
               Rubric Evidence
             </Link>
           )}
-          <button
-            onClick={() => setActiveTab("overview")}
-            className={`px-4 py-2 rounded-lg text-sm font-medium ${
-              activeTab === "overview" 
-                ? "bg-blue-600 text-white" 
-                : "bg-foreground/10 text-foreground/70 hover:bg-foreground/20"
-            }`}
-          >
+          <span className="inline-flex h-10 items-center justify-center rounded-full px-5 text-sm font-semibold bg-blue-600 text-white transition transform hover:scale-105 hover:shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-200">
             Overview
-          </button>
-          <button
-            onClick={() => setActiveTab("transactions")}
-            className={`px-4 py-2 rounded-lg text-sm font-medium ${
-              activeTab === "transactions" 
-                ? "bg-blue-600 text-white" 
-                : "bg-foreground/10 text-foreground/70 hover:bg-foreground/20"
-            }`}
-          >
+          </span>
+          <Link href="/transactions" className="inline-flex h-10 items-center justify-center rounded-full px-5 text-sm font-semibold bg-blue-600 text-white transition transform hover:scale-105 hover:shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-200">
             Transactions
-          </button>
+          </Link>
           <button
+            type="button"
             onClick={() => {
               setEditingPaycheck(null);
               setShowPaycheckForm(true);
             }}
-            className="inline-flex h-10 items-center justify-center rounded-xl bg-emerald-600 px-4 text-sm font-medium text-white hover:opacity-95"
+            className="inline-flex h-10 items-center justify-center rounded-full px-5 text-sm font-semibold bg-emerald-600 text-white transition transform hover:scale-105 hover:shadow-lg hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-200"
           >
             Add Money
           </button>
           <button
+            type="button"
             onClick={() => {
               setEditingTransaction(null);
               setShowTransactionForm(true);
             }}
-            className="inline-flex h-10 items-center justify-center rounded-xl bg-blue-600 px-4 text-sm font-medium text-white hover:opacity-95"
+            className="inline-flex h-10 items-center justify-center rounded-full px-5 text-sm font-semibold bg-rose-600 text-white transition transform hover:scale-105 hover:shadow-lg hover:bg-rose-700 focus:outline-none focus:ring-2 focus:ring-rose-200"
           >
             Add Expense
           </button>
@@ -288,7 +312,7 @@ export default function TransactionDashboard() {
                     setShowPaycheckForm(false);
                     setEditingPaycheck(null);
                   }}
-                  className="text-foreground/60 hover:text-foreground"
+                  className="text-foreground/60"
                 >
                   ✕
                 </button>
@@ -321,7 +345,7 @@ export default function TransactionDashboard() {
                     setShowTransactionForm(false);
                     setEditingTransaction(null);
                   }}
-                  className="text-foreground/60 hover:text-foreground"
+                  className="text-foreground/60"
                 >
                   ✕
                 </button>
@@ -343,8 +367,7 @@ export default function TransactionDashboard() {
 
       {activeTab === "overview" && (
         <>
-          {/* AI Insights */}
-          <AiInsightsClient transactions={transactionsForAI} />
+          {/* AI Insights (moved to bottom of overview) */}
 
           {/* Balance Cards */}
           <div className="grid gap-6 md:grid-cols-3">
@@ -455,7 +478,7 @@ export default function TransactionDashboard() {
                       </div>
                       <button
                         onClick={() => handleEditPaycheck(paycheck)}
-                        className="opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8 rounded-lg border border-foreground/10 text-foreground/60 hover:text-blue-500 hover:border-blue-200 flex items-center justify-center"
+                        className="h-8 w-8 rounded-lg border border-foreground/10 text-foreground/60 flex items-center justify-center"
                         aria-label="Edit paycheck"
                       >
                         <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -464,7 +487,7 @@ export default function TransactionDashboard() {
                       </button>
                       <button
                         onClick={() => deletePaycheck(paycheck.id)}
-                        className="opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8 rounded-lg border border-foreground/10 text-foreground/60 hover:text-red-500 hover:border-red-200 flex items-center justify-center"
+                        className="h-8 w-8 rounded-lg border border-foreground/10 text-foreground/60 flex items-center justify-center"
                         aria-label="Delete paycheck"
                       >
                         <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -485,7 +508,7 @@ export default function TransactionDashboard() {
               {transactions.length > 5 && (
                 <button
                   onClick={() => setActiveTab("transactions")}
-                  className="text-sm text-blue-600 hover:text-blue-700"
+                  className="text-sm text-blue-600"
                 >
                   View All
                 </button>
@@ -531,7 +554,7 @@ export default function TransactionDashboard() {
                         </div>
                         <button
                           onClick={() => handleEditTransaction(transaction)}
-                          className="opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8 rounded-lg border border-foreground/10 text-foreground/60 hover:text-blue-500 hover:border-blue-200 flex items-center justify-center"
+                          className="h-8 w-8 rounded-lg border border-foreground/10 text-foreground/60 flex items-center justify-center"
                           aria-label="Edit transaction"
                         >
                           <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -540,7 +563,7 @@ export default function TransactionDashboard() {
                         </button>
                         <button
                           onClick={() => deleteTransaction(transaction.id)}
-                          className="opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8 rounded-lg border border-foreground/10 text-foreground/60 hover:text-red-500 hover:border-red-200 flex items-center justify-center"
+                          className="h-8 w-8 rounded-lg border border-foreground/10 text-foreground/60 flex items-center justify-center"
                           aria-label="Delete transaction"
                         >
                           <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -553,6 +576,11 @@ export default function TransactionDashboard() {
                 })}
               </div>
             )}
+          </div>
+
+          {/* AI Insights placed at the bottom of the overview */}
+          <div className="mt-6">
+            <AiInsightsClient transactions={transactionsForAI} />
           </div>
         </>
       )}

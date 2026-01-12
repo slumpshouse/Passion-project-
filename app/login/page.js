@@ -247,7 +247,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full inline-flex h-11 items-center justify-center rounded-xl bg-blue-600 px-6 text-sm font-medium text-white hover:opacity-95 disabled:opacity-60"
+              className="w-full inline-flex h-11 items-center justify-center rounded-xl bg-blue-600 px-6 text-sm font-medium text-white disabled:opacity-60"
             >
               {loading ? "Loading..." : (isLogin ? "Sign In" : "Create Account")}
             </button>
@@ -256,7 +256,7 @@ export default function LoginPage() {
           {/* Forgot Password (only show on login) */}
           {isLogin && (
             <div className="text-center mt-4">
-              <button className="text-sm text-blue-600 hover:text-blue-700">
+              <button className="text-sm text-blue-600">
                 Forgot your password?
               </button>
             </div>
@@ -266,13 +266,13 @@ export default function LoginPage() {
           <div className="border-t border-foreground/10 mt-6 pt-6 text-center">
             <p className="text-sm text-foreground/60">
               {isLogin ? "Don't have an account?" : "Already have an account?"}
-              <button
-                type="button"
-                onClick={toggleMode}
-                className="ml-2 text-blue-600 hover:text-blue-700 font-medium"
-              >
-                {isLogin ? "Sign up" : "Sign in"}
-              </button>
+                <button
+                  type="button"
+                  onClick={toggleMode}
+                  className="ml-2 text-blue-600 font-medium"
+                >
+                  {isLogin ? "Sign up" : "Sign in"}
+                </button>
             </p>
           </div>
         </div>
@@ -281,7 +281,7 @@ export default function LoginPage() {
         <div className="text-center mt-6">
           <Link 
             href="/" 
-            className="text-sm text-foreground/60 hover:text-foreground"
+            className="text-sm text-foreground/60"
           >
             ← Back to home
           </Link>

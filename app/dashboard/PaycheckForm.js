@@ -189,14 +189,14 @@ export default function PaycheckForm({ editingPaycheck, onAddPaycheck, onCancel 
         <div className="flex gap-3 pt-4">
           <button
             type="submit"
-            className="flex-1 inline-flex items-center justify-center rounded-xl bg-emerald-600 px-4 py-3 text-sm font-medium text-white hover:opacity-95"
+            className="flex-1 inline-flex items-center justify-center rounded-xl bg-emerald-600 px-4 py-3 text-sm font-medium text-white"
           >
             {editingPaycheck ? 'Update Paycheck' : 'Add Paycheck'}
           </button>
           <button
             type="button"
             onClick={onCancel}
-            className="flex-1 inline-flex items-center justify-center rounded-xl border border-foreground/10 px-4 py-3 text-sm font-medium text-foreground/80 hover:text-foreground"
+            className="flex-1 inline-flex items-center justify-center rounded-xl border border-foreground/10 px-4 py-3 text-sm font-medium text-foreground/80"
           >
             Cancel
           </button>

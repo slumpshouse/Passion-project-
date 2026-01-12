@@ -97,7 +97,7 @@ export default function RubricEvidencePage() {
               </div>
               <Link
                 href="/dashboard"
-                className="inline-flex h-10 items-center justify-center rounded-xl bg-blue-600 px-4 text-sm font-medium text-white hover:opacity-95"
+                className="inline-flex h-10 items-center justify-center rounded-xl bg-blue-600 px-4 text-sm font-medium text-white"
               >
                 Back to Dashboard
               </Link>
@@ -145,7 +145,7 @@ export default function RubricEvidencePage() {
                         <div className="text-xs font-medium text-foreground/60 mb-1">Evidence Location:</div>
                         <Link 
                           href={item.evidence.startsWith('/why-us') ? '/why-us' : '/reflection'}
-                          className="block text-sm bg-foreground/10 hover:bg-foreground/15 rounded-lg px-3 py-2 font-mono transition-colors"
+                          className="block text-sm bg-foreground/10 rounded-lg px-3 py-2 font-mono transition-colors"
                         >
                           {item.evidence}
                         </Link>

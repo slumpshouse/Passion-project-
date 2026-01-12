@@ -359,7 +359,7 @@ export default function AboutPage() {
             A real example of how lack of tracking derailed someone’s savings goal
           </p>
 
-          <div className="mt-10 rounded-3xl bg-blue-50 p-6 sm:p-10">
+          <div className="mt-10 rounded-3xl border border-foreground/10 bg-background p-6 sm:p-10 shadow-sm">
             <div className="flex items-start gap-4">
               <div
                 className="flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-600 text-white"

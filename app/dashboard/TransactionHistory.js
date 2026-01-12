@@ -195,7 +195,7 @@ export default function TransactionHistory({ transactions, onEditTransaction, on
         <div className="flex justify-end mt-4">
           <button
             onClick={clearFilters}
-            className="text-sm text-blue-600 hover:text-blue-700"
+            className="text-sm text-blue-600"
           >
             Clear Filters
           </button>
@@ -212,7 +212,7 @@ export default function TransactionHistory({ transactions, onEditTransaction, on
             className={`px-3 py-1 rounded-md ${
               sortBy === field 
                 ? "bg-blue-600 text-white" 
-                : "bg-foreground/10 text-foreground/70 hover:bg-foreground/20"
+                : "bg-foreground/10 text-foreground/70"
             }`}
           >
             {field.charAt(0).toUpperCase() + field.slice(1)}
@@ -273,19 +273,19 @@ export default function TransactionHistory({ transactions, onEditTransaction, on
                           <div className="flex gap-2 mt-2">
                             {onEditTransaction && (
                               <button
-                                onClick={() => onEditTransaction(transaction)}
-                                className="text-xs text-blue-600 hover:text-blue-700"
-                              >
-                                Edit
-                              </button>
+                                  onClick={() => onEditTransaction(transaction)}
+                                  className="text-xs text-blue-600"
+                                >
+                                  Edit
+                                </button>
                             )}
                             {onDeleteTransaction && (
                               <button
-                                onClick={() => onDeleteTransaction(transaction.id)}
-                                className="text-xs text-rose-600 hover:text-rose-700"
-                              >
-                                Delete
-                              </button>
+                                  onClick={() => onDeleteTransaction(transaction.id)}
+                                  className="text-xs text-rose-600"
+                                >
+                                  Delete
+                                </button>
                             )}
                           </div>
                         )}

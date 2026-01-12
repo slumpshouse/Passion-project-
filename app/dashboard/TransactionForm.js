@@ -185,7 +185,7 @@ export default function TransactionForm({ onAddTransaction, onCancel, initialTra
         <div className="flex gap-3 pt-4">
           <button
             type="submit"
-            className="inline-flex h-11 items-center justify-center rounded-xl bg-blue-600 px-6 text-sm font-medium text-white hover:opacity-95"
+            className="inline-flex h-11 items-center justify-center rounded-xl bg-blue-600 px-6 text-sm font-medium text-white"
           >
             {initialTransaction ? "Update Transaction" : "Save Transaction"}
           </button>
@@ -194,7 +194,7 @@ export default function TransactionForm({ onAddTransaction, onCancel, initialTra
             <button
               type="button"
               onClick={onCancel}
-              className="inline-flex h-11 items-center justify-center rounded-xl border border-foreground/10 px-6 text-sm font-medium text-foreground/80 hover:text-foreground"
+              className="inline-flex h-11 items-center justify-center rounded-xl border border-foreground/10 px-6 text-sm font-medium text-foreground/80"
             >
               Cancel
             </button>

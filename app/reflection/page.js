@@ -89,7 +89,7 @@ export default function ReflectionPage() {
         <div className="text-center">
           <h1 className="text-2xl font-bold text-foreground mb-4">Access Denied</h1>
           <p className="text-foreground/60 mb-6">Admin access required to view this page.</p>
-          <Link href="/dashboard" className="text-blue-600 hover:text-blue-700">
+          <Link href="/dashboard" className="text-blue-600">
             Return to Dashboard
           </Link>
         </div>
@@ -117,7 +117,7 @@ export default function ReflectionPage() {
               </span>
               <Link
                 href="/dashboard"
-                className="text-sm text-blue-600 hover:text-blue-700"
+                className="text-sm text-blue-600"
               >
                 Back to Dashboard
               </Link>
@@ -138,7 +138,7 @@ export default function ReflectionPage() {
             <div className="mt-4">
               <h3 className="text-sm font-medium text-foreground/70">Identified & Planned Solution</h3>
               <p className="text-sm text-foreground/60">
-                See the project plan and roadmap: <Link href="/why-us" className="text-blue-600 hover:underline">Project Plan (Why Us)</Link>
+                See the project plan and roadmap: <Link href="/why-us" className="text-blue-600">Project Plan (Why Us)</Link>
               </p>
             </div>
           </div>

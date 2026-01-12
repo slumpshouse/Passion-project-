@@ -84,6 +84,7 @@
   .card {
     background: var(--surface); border-radius: 1rem; padding: 1rem; box-shadow: var(--shadow-md); transition: transform 220ms var(--ease), box-shadow 220ms var(--ease);
   }
+  /* card text follows theme variables (no forced overrides) */
   .card:hover { transform: translateY(-6px); box-shadow: 0 18px 50px rgba(2,6,23,0.12); }
 
   /* Glow utility */
@@ -111,4 +112,6 @@
   .text-white { color: var(--text) !important; }
   .text-white\/95 { color: var(--text) !important; }
 }
+
+/* No utility-level forced black overrides — use component classes and theme tokens. */
 
